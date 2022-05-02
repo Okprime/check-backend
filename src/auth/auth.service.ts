@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../user/entities/user.entity';
 import { PhoneDetails, UsersService } from '../user/user.service';
@@ -86,5 +90,20 @@ export class AuthService {
     const countryCode = pn.getCountryCode();
     const phoneNumber = pn.getNumber('significant');
     return { countryCode: `+${countryCode}`, phoneNumber };
+  }
+
+  async refreshToken(user, token) {
+    const refreshToken = await this.redisService.get(token);
+    if (!refreshToken) {
+      throw new BadRequestException('Invalid refresh token');
+    }
+    const decoded = this.jwtService.decode(refreshToken);
+
+    if (decoded.sub !== user.id) {
+      await this.redisService.delete(refreshToken);
+      throw new UnauthorizedException();
+    }
+    await this.redisService.delete(refreshToken);
+    return this.login(user);
   }
 }

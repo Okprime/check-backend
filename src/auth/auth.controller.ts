@@ -9,7 +9,8 @@ import {
   Get,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { AuthUser } from '../common/decorators/auth.decorator';
+import { RefreshAuthGuard } from 'src/common/guards/refresh-auth.guard';
+import { AuthUser, AuthUserData } from '../common/decorators/auth.decorator';
 import { JwtAuthGuard } from '../common/guards/jwt.guard';
 import { LocalAuthGuard } from '../common/guards/local-auth.guard';
 import { User } from '../user/entities/user.entity';
@@ -17,6 +18,7 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/auth-login.dto';
 import { OTPResponseDTO } from './dto/OTPResponse.dto';
 import { OTPVerificationDTO } from './dto/OTPVerification.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -59,5 +61,16 @@ export class AuthController {
     return res
       .status(200)
       .json({ message: 'User has been verified', error: false });
+  }
+
+  @UseGuards(RefreshAuthGuard)
+  @ApiBearerAuth()
+  @Post('refresh')
+  async refreshToken(
+    @AuthUser() user: AuthUserData,
+    @Body() body: RefreshTokenDto,
+  ) {
+    const { refreshToken } = body;
+    return this.authService.refreshToken(user, refreshToken);
   }
 }

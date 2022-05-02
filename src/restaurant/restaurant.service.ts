@@ -23,6 +23,8 @@ export class RestaurantService {
       ...createRestaurantDto,
       manager: managerDetails,
     };
+
+    // create unique tables with the number
     return this.restaurantRepository.save(payload);
   }
 

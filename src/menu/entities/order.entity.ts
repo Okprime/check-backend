@@ -10,19 +10,28 @@ import {
 } from 'typeorm';
 import { Category } from '../../category/entities/category.entity';
 
+enum OrderType {
+  EAT_IN = 'eat-in',
+  EAT_OUT = 'eat-out',
+}
+
 @Entity()
-export class Menu {
+export class Order {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 300, nullable: false })
-  name: string;
+  @Column({
+    type: 'enum',
+    enum: OrderType,
+    nullable: true,
+  })
+  orderType: OrderType;
 
   @Column({ type: 'varchar', length: 300, nullable: true })
   description?: string;
 
   @Column({ type: 'int', width: 10, nullable: false })
-  price: number;
+  amount: number;
 
   @ManyToOne(() => Category, (category) => category.menu)
   @JoinColumn({ name: 'category_id' })

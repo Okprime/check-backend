@@ -10,6 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
+import { Table } from './table.entity';
 
 @Entity()
 export class Restaurant {
@@ -25,7 +26,7 @@ export class Restaurant {
   @Column({ type: 'varchar', length: 300, nullable: false, unique: true })
   address: string;
 
-  @Column({ type: 'varchar', length: 300, nullable: false, default: 'user' })
+  @Column({ type: 'varchar', length: 300, nullable: false })
   city: string;
 
   @Column({ type: 'int', width: 10, nullable: true })
@@ -34,6 +35,9 @@ export class Restaurant {
   @ManyToOne(() => User, (user) => user.resturants, { eager: true })
   @JoinColumn({ name: 'user_id' })
   manager: User;
+
+  @OneToMany(() => Table, (table) => table.restaurant, { eager: true })
+  tables: Table[];
 
   @OneToMany(() => Menu, (menu) => menu.restaurant)
   menu: Menu[];

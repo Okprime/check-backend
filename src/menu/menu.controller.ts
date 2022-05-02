@@ -41,9 +41,7 @@ export class MenuController {
     type: [MenuList],
   })
   @Get()
-  async findAll(@AuthUser() user: User) {
-    await this.handleRestriction(user);
-
+  async findAll() {
     return plainToClass(MenuList, this.menuService.findAll());
   }
 
@@ -52,24 +50,17 @@ export class MenuController {
     type: MenuList,
   })
   @Get(':id')
-  async findOne(@Param('id') id: string, @AuthUser() user: User) {
-    await this.handleRestriction(user);
+  async findOne(@Param('id') id: string) {
     return plainToClass(MenuList, this.menuService.findOne(+id));
   }
 
   @Patch(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() updateMenuDto: UpdateMenuDto,
-    @AuthUser() user: User,
-  ) {
-    await this.handleRestriction(user);
+  async update(@Param('id') id: string, @Body() updateMenuDto: UpdateMenuDto) {
     return this.menuService.update(+id, updateMenuDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: number, @AuthUser() user: User) {
-    await this.handleRestriction(user);
+  async remove(@Param('id') id: number) {
     return this.menuService.remove(id);
   }
 
