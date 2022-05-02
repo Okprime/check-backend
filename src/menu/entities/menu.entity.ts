@@ -5,9 +5,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Category } from '../../category/entities/category.entity';
 
 @Entity()
 export class Menu {
@@ -23,8 +25,9 @@ export class Menu {
   @Column({ type: 'int', width: 10, nullable: false })
   price: number;
 
-  @Column({ type: 'varchar', length: 300, nullable: false, default: 'user' })
-  category: string;
+  @ManyToOne(() => Category, (category) => category.menu)
+  @JoinColumn({ name: 'category_id' })
+  category: Category;
 
   @Column({ type: 'boolean', default: true })
   isAvailable: boolean;

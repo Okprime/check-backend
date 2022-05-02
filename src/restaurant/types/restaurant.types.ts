@@ -1,10 +1,10 @@
-import { Admin } from '../../user/entities/admin.entity';
+import { User } from '../../user/entities/user.entity';
 
 export interface RestaurantPayload {
   name: string;
   image?: string;
   address: string;
   city: string;
-  manager: Admin;
+  manager: User;
   noOfTables: number;
 }

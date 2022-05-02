@@ -2,10 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
+import { Restaurant } from '../../restaurant/entities/restaurant.entity';
 
 @Entity()
 export class User {
@@ -22,7 +24,10 @@ export class User {
   email: string;
 
   @Column({ type: 'varchar', length: 300, nullable: false, default: 'user' })
-  userRole: string;
+  role: string;
+
+  @Column({ type: 'int', width: 10, nullable: false, default: 0 })
+  balance: number;
 
   @Column()
   @CreateDateColumn()
@@ -48,4 +53,7 @@ export class User {
 
   @Column({ type: 'boolean', default: false })
   isVerified: boolean;
+
+  @OneToMany(() => Restaurant, (restaurant) => restaurant.manager)
+  resturants: Restaurant[];
 }

@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose, Type } from 'class-transformer';
 import { IsBoolean, IsString } from 'class-validator';
+import { CategoryDTO } from '../../category/dto/category.dto';
 
 @Exclude()
-class RestaurantDTO {
+class RestaurantItemDTO {
   @Expose()
   @ApiProperty()
   id: string;
@@ -30,7 +31,7 @@ class RestaurantDTO {
 
   @Expose()
   @ApiProperty()
-  isDeleted: string;
+  isDeleted: boolean;
 
   @Expose()
   @ApiProperty()
@@ -65,8 +66,8 @@ export class MenuList {
 
   @Expose()
   @ApiProperty()
-  @IsString()
-  category: string;
+  @Type(() => CategoryDTO)
+  category: CategoryDTO;
 
   @Expose()
   @ApiProperty()
@@ -75,6 +76,6 @@ export class MenuList {
 
   @Expose()
   @ApiProperty()
-  @Type(() => RestaurantDTO)
-  restaurant: RestaurantDTO;
+  @Type(() => RestaurantItemDTO)
+  restaurant: RestaurantItemDTO;
 }

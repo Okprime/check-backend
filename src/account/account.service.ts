@@ -5,14 +5,12 @@ import { appConstant } from '../common/constants/app.constant';
 import { User } from '../user/entities/user.entity';
 import { hashPassword } from '../common/utils/crypto';
 import { CreateUser } from '../user/types/user.types';
-import { AdminService } from '../user/admin.service';
 
 @Injectable()
 export class AccountService {
   constructor(
     private usersService: UsersService,
     private authService: AuthService,
-    private adminService: AdminService,
   ) {}
 
   async registerAccount(
@@ -47,41 +45,17 @@ export class AccountService {
     }
     const { salt, hash } = await hashPassword(password);
 
-    if (role === 'admin') {
-      return this.saveAdminAccount(createPayload, salt, hash);
-    } else {
-      return this.saveUserAccount(createPayload, salt, hash);
-    }
-  }
-
-  async saveUserAccount(createPayload: CreateUser, salt: string, hash: string) {
-    const { countryCode, phoneNumber } = createPayload;
     const user = await this.usersService.create({
       ...createPayload,
       salt,
       hash,
-    });
-
-    // // send otp verification
-    await this.authService.handleOTPRequest(`${countryCode}${phoneNumber}`);
-
-    return this.authService.login(user);
-  }
-
-  async saveAdminAccount(
-    createPayload: CreateUser,
-    salt: string,
-    hash: string,
-  ) {
-    const { phoneNumber } = createPayload;
-    const user = await this.adminService.create({
-      ...createPayload,
-      salt,
-      hash,
+      role,
     });
 
     // send otp verification
-    await this.authService.handleOTPRequest(phoneNumber);
+    // await this.authService.handleOTPRequest(
+    //   `${phoneDetails.countryCode}${phoneNumber}`,
+    // );
 
     return this.authService.login(user);
   }

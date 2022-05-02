@@ -6,6 +6,7 @@ import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
 import { Menu } from './entities/menu.entity';
 import { MenuPayload } from './types/menu.types';
+import { CategoryService } from '../category/category.service';
 
 @Injectable()
 export class MenuService {
@@ -13,17 +14,21 @@ export class MenuService {
     @InjectRepository(Menu)
     private menuRepository: Repository<Menu>,
     private restaurantService: RestaurantService,
+    private categoryService: CategoryService,
   ) {}
 
   async create(createMenuDto: CreateMenuDto): Promise<Menu> {
-    const { restaurantId } = createMenuDto;
+    const { restaurantId, categoryId } = createMenuDto;
     const restaurantDetails = await this.restaurantService.findOne(
       restaurantId,
     );
 
+    const categoryDetails = await this.categoryService.findOne(categoryId);
+
     const payload: MenuPayload = {
       ...createMenuDto,
       restaurant: restaurantDetails,
+      category: categoryDetails,
     };
 
     return this.menuRepository.save(payload);
@@ -31,22 +36,26 @@ export class MenuService {
 
   findAll(): Promise<Menu[]> {
     return this.menuRepository.find({
+      relations: ['category'],
       where: {
         isAvailable: true,
+      },
+      order: {
+        id: -1,
       },
     });
   }
 
   async findOne(id: number): Promise<Menu> {
     const result = await this.menuRepository.findOne({
+      relations: ['category'],
       where: {
         id,
         isAvailable: true,
       },
     });
 
-    if (result === undefined)
-      throw new NotFoundException('Restaurant not found');
+    if (result === undefined) throw new NotFoundException('Menu not found');
 
     return result;
   }

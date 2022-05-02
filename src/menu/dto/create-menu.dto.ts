@@ -20,10 +20,9 @@ export class CreateMenuDto {
   description?: string;
 
   @ApiProperty()
+  @IsNumber()
   @IsDefined()
-  @IsNotEmpty()
-  @IsString()
-  category: string;
+  categoryId: number;
 
   @ApiProperty()
   @IsDefined()

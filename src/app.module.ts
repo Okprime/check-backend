@@ -11,6 +11,7 @@ import { CommonModule } from './common/common.module';
 import { AccountModule } from './account/account.module';
 import { RestaurantModule } from './restaurant/restaurant.module';
 import { MenuModule } from './menu/menu.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { MenuModule } from './menu/menu.module';
     AccountModule,
     RestaurantModule,
     MenuModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

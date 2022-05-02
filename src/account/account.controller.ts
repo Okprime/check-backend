@@ -12,9 +12,4 @@ export class AccountController {
   async registerAccount(@Body() createUserDto: CreateUserDto) {
     return this.accountService.registerAccount(createUserDto);
   }
-
-  @Post('register/admin')
-  async registerAdminAccount(@Body() createUserDto: CreateUserDto) {
-    return this.accountService.registerAccount(createUserDto);
-  }
 }

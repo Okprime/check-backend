@@ -2,34 +2,18 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
 
 @Exclude()
-export class StrippedUser {
+export class CategoryDTO {
   @Expose()
   @ApiProperty()
   id: string;
 
   @Expose()
   @ApiProperty()
-  firstName: string;
+  name: string;
 
   @Expose()
   @ApiProperty()
-  lastName: string;
-
-  @Expose()
-  @ApiProperty()
-  email: string;
-
-  @Expose()
-  @ApiProperty()
-  isVerified: boolean;
-
-  @Expose()
-  @ApiProperty({ default: 'user' })
-  role: string;
-
-  @Expose()
-  @ApiProperty()
-  balance: number;
+  isDeleted: boolean;
 
   @Expose()
   @ApiProperty()

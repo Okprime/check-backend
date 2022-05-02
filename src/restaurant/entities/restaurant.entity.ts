@@ -1,5 +1,4 @@
 import { Menu } from '../../menu/entities/menu.entity';
-import { Admin } from '../../user/entities/admin.entity';
 import {
   Column,
   CreateDateColumn,
@@ -10,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { User } from '../../user/entities/user.entity';
 
 @Entity()
 export class Restaurant {
@@ -31,9 +31,9 @@ export class Restaurant {
   @Column({ type: 'int', width: 10, nullable: true })
   noOfTables: number;
 
-  @ManyToOne(() => Admin, (admin) => admin.resturants, { eager: true })
-  @JoinColumn({ name: 'admin_id' })
-  manager: Admin;
+  @ManyToOne(() => User, (user) => user.resturants, { eager: true })
+  @JoinColumn({ name: 'user_id' })
+  manager: User;
 
   @OneToMany(() => Menu, (menu) => menu.restaurant)
   menu: Menu[];

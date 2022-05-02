@@ -23,7 +23,7 @@ class Manager {
   @Expose()
   @ApiProperty()
   @IsString()
-  userRole: string;
+  role: string;
 
   @Expose()
   @ApiProperty()
@@ -59,7 +59,7 @@ export class RestaurantDTO {
 
   @Expose()
   @ApiProperty()
-  isDeleted: string;
+  isDeleted: boolean;
 
   @Expose()
   @ApiProperty()
