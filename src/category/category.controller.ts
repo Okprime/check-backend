@@ -7,8 +7,10 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { plainToClass } from 'class-transformer';
 import { CategoryService } from './category.service';
+import { CategoryDTO } from './dto/category.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
@@ -17,16 +19,31 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
+  @ApiOkResponse({
+    description: 'Return created menu',
+    type: CategoryDTO,
+  })
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoryService.create(createCategoryDto);
+    return plainToClass(
+      CategoryDTO,
+      this.categoryService.create(createCategoryDto),
+    );
   }
 
+  @ApiOkResponse({
+    description: 'Return created menu',
+    type: [CategoryDTO],
+  })
   @Get()
   findAll() {
     return this.categoryService.findAll();
   }
 
+  @ApiOkResponse({
+    description: 'Return created menu',
+    type: CategoryDTO,
+  })
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.categoryService.findOne(+id);
