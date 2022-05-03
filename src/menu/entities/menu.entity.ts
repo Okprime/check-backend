@@ -31,7 +31,7 @@ export class Menu {
   @Column({ type: 'boolean', default: true })
   isAvailable: boolean;
 
-  @ManyToOne(() => Restaurant, (restaurant) => restaurant.menu, { eager: true })
+  @ManyToOne(() => Restaurant, (restaurant) => restaurant.menu)
   @JoinColumn({ name: 'restaurant_id' })
   restaurant: Restaurant;
 

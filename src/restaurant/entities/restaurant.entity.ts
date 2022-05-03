@@ -24,7 +24,7 @@ export class Restaurant {
   @Column({ type: 'varchar', length: 300, nullable: true })
   image?: string;
 
-  @Column({ type: 'varchar', length: 300, nullable: false, unique: true })
+  @Column({ type: 'varchar', length: 300, nullable: false })
   address: string;
 
   @Column({ type: 'varchar', length: 300, nullable: false })
@@ -33,7 +33,7 @@ export class Restaurant {
   @Column({ type: 'int', width: 10, nullable: true })
   noOfTables: number;
 
-  @ManyToOne(() => User, (user) => user.resturants, { eager: true })
+  @ManyToOne(() => User, (user) => user.resturants)
   @JoinColumn({ name: 'user_id' })
   manager: User;
 

@@ -10,6 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { OrderType } from '../types/order.types';
+import { OrderItem } from '../../order-item/entities/order-item.entity';
 
 @Entity()
 export class Order {
@@ -31,7 +32,7 @@ export class Order {
     default: () => "'[]'",
     nullable: false,
   })
-  menuItems: Menu[];
+  menuItems: OrderItem[];
 
   @Column()
   @CreateDateColumn()

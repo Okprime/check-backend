@@ -18,6 +18,9 @@ export class OrderItem {
   @Column({ type: 'int', width: 10, nullable: false })
   totalAmount: number;
 
+  @Column({ type: 'int', width: 10, nullable: false })
+  quantity: number;
+
   @ManyToOne(() => Menu)
   @JoinColumn({ name: 'menu_id' })
   menu: Menu;
@@ -30,7 +33,7 @@ export class OrderItem {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.myOrders, { eager: true })
+  @ManyToOne(() => User, (user) => user.myOrders)
   @JoinColumn({ name: 'User_id' })
   user: User;
 }

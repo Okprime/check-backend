@@ -66,6 +66,11 @@ export class MenuList {
 
   @Expose()
   @ApiProperty()
+  @IsString()
+  quantity: string;
+
+  @Expose()
+  @ApiProperty()
   @Type(() => CategoryDTO)
   category: CategoryDTO;
 

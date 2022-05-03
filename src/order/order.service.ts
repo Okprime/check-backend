@@ -1,33 +1,39 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Order } from './entities/order.entity';
-import { MenuService } from 'src/menu/menu.service';
+import { OrderItemService } from '../order-item/order-item.service';
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectRepository(Order)
     private orderRepository: Repository<Order>,
-    private menuService: MenuService,
+    private orderItemService: OrderItemService,
   ) {}
 
   async create(createOrderDto: CreateOrderDto, user: User) {
     const { orderType, menuItemsId, amount } = createOrderDto;
 
-    const menuItemDetails = await this.menuService.findByIds(menuItemsId);
+    const orderItemDetails = await this.orderItemService.findByMenuIds(
+      menuItemsId,
+    );
 
     const payload = {
       orderType,
       amount,
-      menuItems: menuItemDetails,
+      menuItems: orderItemDetails,
       user,
     };
 
     return this.orderRepository.save(payload);
+  }
+
+  async saveOrder(payload: any) {
+    return this.orderRepository.save({ ...payload });
   }
 
   findAll() {
@@ -39,15 +45,19 @@ export class OrderService {
     return this.orderRepository.findByIds(ids);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
+  async findOne(id: number) {
+    const result = await this.orderRepository.findOne(id);
+    if (result === undefined) throw new NotFoundException('Order not found');
+
+    return result;
   }
 
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
+  async update(id: number, updateOrderDto: UpdateOrderDto) {
+    await this.orderRepository.update(id, updateOrderDto);
+    return 'Success';
   }
 
   remove(id: number) {
-    return `This action removes a #${id} order`;
+    return this.orderRepository.delete(id);
   }
 }

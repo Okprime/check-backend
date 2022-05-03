@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { Order } from '../../order/entities/order.entity';
+import { CartStatus } from '../types/cart.types';
 
 @Entity()
 export class Cart {
@@ -19,7 +20,7 @@ export class Cart {
   @Column({ type: 'int', width: 10, nullable: false })
   totalAmount: number;
 
-  @ManyToOne(() => Restaurant, (restaurant) => restaurant.cart, { eager: true })
+  @ManyToOne(() => Restaurant, (restaurant) => restaurant.cart)
   @JoinColumn({ name: 'restaurant_id' })
   restaurant: Restaurant;
 
@@ -41,36 +42,12 @@ export class Cart {
     nullable: false,
   })
   orders: Order[];
+
+  @Column({
+    type: 'enum',
+    enum: CartStatus,
+    nullable: false,
+    default: CartStatus.PENDING,
+  })
+  status: CartStatus;
 }
-
-// @Entity()
-// export class CartTest {
-//   @PrimaryGeneratedColumn()
-//   id: number;
-
-//   @Column({ type: 'int', width: 10, nullable: false })
-//   totalAmount: number;
-
-//   @ManyToOne(() => Restaurant, (restaurant) => restaurant.cart, { eager: true })
-//   @JoinColumn({ name: 'restaurant_id' })
-//   restaurant: Restaurant;
-
-//   @Column()
-//   @CreateDateColumn()
-//   createdAt: Date;
-
-//   @Column()
-//   @UpdateDateColumn()
-//   updatedAt: Date;
-
-//   @ManyToOne(() => User, (user) => user.myCarts, { eager: true })
-//   @JoinColumn({ name: 'User_id' })
-//   user: User;
-
-//   @Column({
-//     type: 'jsonb',
-//     default: () => "'[]'",
-//     nullable: false,
-//   })
-//   orders: Order[];
-// }

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Res,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthUser } from '../common/decorators/auth.decorator';
@@ -28,13 +29,17 @@ export class CartController {
     return this.cartService.create(createCartDto, user);
   }
 
-  // @Post('test')
-  // createTest(
-  //   @Body() createCartDtoTest: CreateCartDtoTest,
-  //   @AuthUser() user: User,
-  // ) {
-  //   return this.cartService.createTest(createCartDtoTest, user);
-  // }
+  @Post('test')
+  async createTest(
+    @Body() createCartDtoTest: CreateCartDtoTest,
+    @AuthUser() user: User,
+    @Res() res,
+  ) {
+    await this.cartService.createTest(createCartDtoTest, user);
+    return res
+      .status(200)
+      .json({ message: 'Your Order has been placed', error: false });
+  }
 
   @Get()
   findAll() {
