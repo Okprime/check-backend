@@ -59,8 +59,7 @@ export class RestaurantController {
     type: [RestaurantDTO],
   })
   @Get()
-  async findAll(@AuthUser() user: User) {
-    await this.handleRestriction(user);
+  async findAll() {
     return plainToClass(RestaurantDTO, this.restaurantService.findAll());
   }
 
@@ -69,8 +68,7 @@ export class RestaurantController {
     type: RestaurantDTO,
   })
   @Get(':id')
-  async findOne(@Param('id') id: number, @AuthUser() user: User) {
-    await this.handleRestriction(user);
+  async findOne(@Param('id') id: number) {
     return plainToClass(RestaurantDTO, this.restaurantService.findOne(id));
   }
 
@@ -78,15 +76,12 @@ export class RestaurantController {
   async update(
     @Param('id') id: string,
     @Body() updateRestaurantDto: UpdateRestaurantDto,
-    @AuthUser() user: User,
   ) {
-    await this.handleRestriction(user);
     return this.restaurantService.update(+id, updateRestaurantDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string, @AuthUser() user: User) {
-    await this.handleRestriction(user);
+  async remove(@Param('id') id: string) {
     return this.restaurantService.remove(+id);
   }
 

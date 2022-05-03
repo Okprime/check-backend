@@ -24,7 +24,7 @@ export class Menu {
   @Column({ type: 'int', width: 10, nullable: false })
   price: number;
 
-  @ManyToOne(() => Category, (category) => category.menu)
+  @ManyToOne(() => Category, (category) => category.menu, { eager: true })
   @JoinColumn({ name: 'category_id' })
   category: Category;
 

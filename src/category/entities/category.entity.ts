@@ -3,7 +3,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -17,7 +16,7 @@ export class Category {
   @Column({ type: 'varchar', length: 300, nullable: false })
   name: string;
 
-  @OneToMany(() => Menu, (menu) => menu.category, { eager: true })
+  @OneToMany(() => Menu, (menu) => menu.category)
   menu: Menu[];
 
   @Column({ type: 'boolean', default: false })
