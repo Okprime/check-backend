@@ -53,9 +53,9 @@ export class AccountService {
     });
 
     // send otp verification
-    // await this.authService.handleOTPRequest(
-    //   `${phoneDetails.countryCode}${phoneNumber}`,
-    // );
+    await this.authService.handleOTPRequest(
+      `${phoneDetails.countryCode}${phoneNumber}`,
+    );
 
     return this.authService.login(user);
   }
