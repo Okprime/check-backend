@@ -12,6 +12,9 @@ import { AccountModule } from './account/account.module';
 import { RestaurantModule } from './restaurant/restaurant.module';
 import { MenuModule } from './menu/menu.module';
 import { CategoryModule } from './category/category.module';
+import { OrderModule } from './order/order.module';
+import { CartModule } from './cart/cart.module';
+import { OrderItemModule } from './order-item/order-item.module';
 
 @Module({
   imports: [
@@ -42,6 +45,9 @@ import { CategoryModule } from './category/category.module';
     RestaurantModule,
     MenuModule,
     CategoryModule,
+    OrderModule,
+    CartModule,
+    OrderItemModule,
   ],
   controllers: [AppController],
   providers: [AppService],

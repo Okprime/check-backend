@@ -8,6 +8,8 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { Restaurant } from '../../restaurant/entities/restaurant.entity';
+import { Order } from '../../order/entities/order.entity';
+import { Cart } from '../../cart/entities/cart.entity';
 
 @Entity()
 export class User {
@@ -56,4 +58,10 @@ export class User {
 
   @OneToMany(() => Restaurant, (restaurant) => restaurant.manager)
   resturants: Restaurant[];
+
+  @OneToMany(() => Order, (order) => order.user)
+  myOrders: Order[];
+
+  @OneToMany(() => Cart, (cart) => cart.user)
+  myCarts: Cart[];
 }

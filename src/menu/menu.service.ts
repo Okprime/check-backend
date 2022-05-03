@@ -46,6 +46,10 @@ export class MenuService {
     });
   }
 
+  findByIds(ids: number[]): Promise<Menu[]> {
+    return this.menuRepository.findByIds(ids);
+  }
+
   async findOne(id: number): Promise<Menu> {
     const result = await this.menuRepository.findOne({
       relations: ['category'],

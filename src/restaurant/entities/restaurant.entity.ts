@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { Table } from './table.entity';
+import { Cart } from '../../cart/entities/cart.entity';
 
 @Entity()
 export class Restaurant {
@@ -41,6 +42,9 @@ export class Restaurant {
 
   @OneToMany(() => Menu, (menu) => menu.restaurant)
   menu: Menu[];
+
+  @OneToMany(() => Cart, (cart) => cart.restaurant)
+  cart: Cart[];
 
   @Column({ type: 'boolean', default: false })
   isDeleted: boolean;

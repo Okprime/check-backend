@@ -10,5 +10,6 @@ import { CategoryModule } from '../category/category.module';
   imports: [TypeOrmModule.forFeature([Menu]), RestaurantModule, CategoryModule],
   controllers: [MenuController],
   providers: [MenuService],
+  exports: [MenuService],
 })
 export class MenuModule {}
