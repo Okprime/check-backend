@@ -96,7 +96,7 @@ export class CartService {
       };
 
       // save cart
-      return this.cartRepository.save(cartPayload);
+      await this.cartRepository.save(cartPayload);
     }
   }
 
