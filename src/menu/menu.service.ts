@@ -7,6 +7,7 @@ import { UpdateMenuDto } from './dto/update-menu.dto';
 import { Menu } from './entities/menu.entity';
 import { MenuPayload } from './types/menu.types';
 import { CategoryService } from '../category/category.service';
+import { GetMenuQueryParams } from './dto/get-menu-query-params.dto';
 
 @Injectable()
 export class MenuService {
@@ -34,7 +35,8 @@ export class MenuService {
     return this.menuRepository.save(payload);
   }
 
-  findAll(): Promise<Menu[]> {
+  findAll(queryParams: GetMenuQueryParams): Promise<Menu[]> {
+    const { limit, offset } = queryParams;
     return this.menuRepository.find({
       relations: ['category'],
       where: {
@@ -43,6 +45,8 @@ export class MenuService {
       order: {
         id: -1,
       },
+      skip: offset,
+      take: limit,
     });
   }
 

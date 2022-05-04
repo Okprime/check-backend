@@ -2,13 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrderService } from '../order/order.service';
 import { Repository } from 'typeorm';
-import { CreateCartDto, CreateCartDtoTest } from './dto/create-cart.dto';
+import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
 import { Cart } from './entities/cart.entity';
 import { RestaurantService } from '../restaurant/restaurant.service';
 import { User } from '../user/entities/user.entity';
 import { MenuService } from '../menu/menu.service';
 import { OrderItemService } from '../order-item/order-item.service';
+import { GetAllCartQueryParams } from './dto/get-all-cart-query-param.dto';
+import { GetCartQueryParams } from './dto/get-cart-query-param.dto';
 
 @Injectable()
 export class CartService {
@@ -21,30 +23,12 @@ export class CartService {
     private orderItemService: OrderItemService,
   ) {}
 
-  async create(createCartDto: CreateCartDto, user: User) {
-    const { restaurantId, table, totalAmount, ordersIds } = createCartDto;
-    const orderDetails = await this.orderService.findByIds(ordersIds);
-    const restaurantDetails = await this.restaurantService.findOne(
-      restaurantId,
-    );
-
-    const cartPayload = {
-      restaurant: restaurantDetails,
-      table,
-      totalAmount,
-      orders: orderDetails,
-      user,
-    };
-
-    return this.cartRepository.save(cartPayload);
-  }
-
   async saveCart(payload: any) {
     return this.cartRepository.save({ ...payload });
   }
 
-  async createTest(createCartDtoTest: CreateCartDtoTest, user: User) {
-    const payload = JSON.parse(createCartDtoTest.payload);
+  async createCart(createCartDto: CreateCartDto, user: User) {
+    const payload = JSON.parse(createCartDto.payload);
 
     const { restaurantId, orders, table, totalAmount } = payload;
 
@@ -100,35 +84,57 @@ export class CartService {
     }
   }
 
-  findAll() {
-    return this.cartRepository.find();
+  getAllCarts(queryParams: GetAllCartQueryParams) {
+    const { limit, offset, status } = queryParams;
+    return this.cartRepository.find({
+      where: {
+        status,
+      },
+      skip: offset,
+      take: limit,
+      order: {
+        id: -1,
+      },
+    });
   }
 
   findOne(id: number) {
     return this.cartRepository.findOne(id);
   }
 
-  findByUser(user: User) {
+  getAllCartForAUser(user: User, queryParams: GetCartQueryParams) {
+    const { limit, offset } = queryParams;
     return this.cartRepository.find({
       where: {
         user,
       },
-    });
-  }
-
-  findByRestaurant(id: number) {
-    return this.cartRepository.find({
-      where: {
-        restaurant: id,
+      skip: offset,
+      take: limit,
+      order: {
+        id: -1,
       },
     });
   }
 
-  update(id: number, updateCartDto: UpdateCartDto) {
-    return `This action updates a #${id} cart`;
+  getAllCartForARestaurant(id: number, queryParams: GetCartQueryParams) {
+    const { limit, offset } = queryParams;
+    return this.cartRepository.find({
+      where: {
+        restaurant: id,
+      },
+      skip: offset,
+      take: limit,
+      order: {
+        id: -1,
+      },
+    });
+  }
+
+  async update(id: number, updateCartDto: UpdateCartDto) {
+    return this.cartRepository.update(id, updateCartDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} cart`;
+    return this.cartRepository.delete(id);
   }
 }

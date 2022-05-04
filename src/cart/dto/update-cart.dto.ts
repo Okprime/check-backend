@@ -1,4 +1,9 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateCartDto } from './create-cart.dto';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
+import { CartStatus } from '../types/cart.types';
 
-export class UpdateCartDto extends PartialType(CreateCartDto) {}
+export class UpdateCartDto {
+  @ApiProperty({ default: CartStatus.COMPLETED })
+  @IsString()
+  status: CartStatus;
+}

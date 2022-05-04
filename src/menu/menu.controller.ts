@@ -8,6 +8,7 @@ import {
   Delete,
   BadRequestException,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { MenuService } from './menu.service';
 import { CreateMenuDto } from './dto/create-menu.dto';
@@ -18,6 +19,7 @@ import { MenuList } from './dto/menu.dto';
 import { User } from '../user/entities/user.entity';
 import { JwtAuthGuard } from '../common/guards/jwt.guard';
 import { AuthUser } from '../common/decorators/auth.decorator';
+import { GetMenuQueryParams } from './dto/get-menu-query-params.dto';
 
 @ApiTags('menu')
 @Controller('menu')
@@ -41,8 +43,8 @@ export class MenuController {
     type: [MenuList],
   })
   @Get()
-  async findAll() {
-    return plainToClass(MenuList, this.menuService.findAll());
+  async findAll(@Query() queryParams: GetMenuQueryParams) {
+    return plainToClass(MenuList, this.menuService.findAll(queryParams));
   }
 
   @ApiOkResponse({
