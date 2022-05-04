@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { Order } from '../../order/entities/order.entity';
-import { CartStatus } from '../types/cart.types';
+import { CartStatus, PaymentType } from '../types/cart.types';
 
 @Entity()
 export class Cart {
@@ -50,4 +50,12 @@ export class Cart {
     default: CartStatus.PENDING,
   })
   status: CartStatus;
+
+  @Column({
+    type: 'enum',
+    enum: PaymentType,
+    nullable: false,
+    default: PaymentType.CASH,
+  })
+  paymentType: PaymentType;
 }

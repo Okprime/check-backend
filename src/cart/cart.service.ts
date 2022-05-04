@@ -63,7 +63,6 @@ export class CartService {
         const orderItemPayload = {
           user,
           menu,
-          totalAmount: item.totalAmount,
           quantity: item.quantity,
         };
 
@@ -77,7 +76,7 @@ export class CartService {
 
       const orderPayload = {
         orderType: order.orderType,
-        amount: order.amount,
+        totalAmount: order.totalAmount,
         menuItems: orderItemDetails,
         user,
       };
@@ -106,7 +105,23 @@ export class CartService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} cart`;
+    return this.cartRepository.findOne(id);
+  }
+
+  findByUser(user: User) {
+    return this.cartRepository.find({
+      where: {
+        user,
+      },
+    });
+  }
+
+  findByRestaurant(id: number) {
+    return this.cartRepository.find({
+      where: {
+        restaurant: id,
+      },
+    });
   }
 
   update(id: number, updateCartDto: UpdateCartDto) {

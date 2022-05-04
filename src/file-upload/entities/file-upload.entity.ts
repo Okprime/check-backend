@@ -20,9 +20,9 @@
 //   @Column({ type: 'varchar', length: 300, nullable: false })
 //   fileURL: string;
 
-//   @ManyToOne(() => User, (user) => user.myUploads, {})
-//   @JoinColumn({ name: 'user_id' })
-//   user: User;
+//   // @ManyToOne(() => User, (user) => user.myUploads, {})
+//   // @JoinColumn({ name: 'user_id' })
+//   // user: User;
 
 //   @Column({ type: 'boolean', nullable: true, default: false })
 //   isDeleted?: boolean;

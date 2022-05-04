@@ -44,7 +44,7 @@
 //       if (data) {
 //         // save location of the file to the db
 //         const newFileUploadPayload = new FileUpload();
-//         newFileUploadPayload.user = user;
+//         // newFileUploadPayload.user = user;
 //         newFileUploadPayload.fileName = fileName;
 //         newFileUploadPayload.fileURL = data.Location;
 
@@ -57,9 +57,9 @@
 
 //   async getAllUploadedFiles(userId: string, offset: number, limit: number) {
 //     const user = await this.usersService.getUserById(userId);
-//     if (user.userRole === 'user') {
-//       throw new BadRequestException('Sorry, you cannot perfom this action');
-//     }
+//     // if (user.userRole === 'user') {
+//     //   throw new BadRequestException('Sorry, you cannot perfom this action');
+//     // }
 //     const query = await this.fileUploadRepository
 //       .createQueryBuilder('fileUpload')
 //       .where('fileUpload.isDeleted is false')
@@ -83,9 +83,9 @@
 //   async markFileAsUnsafe(fileId: string, userId: string) {
 //     // get user info to detemine the role
 //     const user = await this.usersService.getUserById(userId);
-//     if (user.userRole === 'user') {
-//       throw new BadRequestException('Sorry, you cannot perfom this action');
-//     }
+//     // if (user.userRole === 'user') {
+//     //   throw new BadRequestException('Sorry, you cannot perfom this action');
+//     // }
 //     const isUnsafe = true;
 //     const isDeleted = true;
 //     return this.fileUploadRepository.update(

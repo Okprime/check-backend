@@ -25,7 +25,7 @@ export class Order {
   orderType: OrderType;
 
   @Column({ type: 'int', width: 10, nullable: false })
-  amount: number;
+  totalAmount: number;
 
   @Column({
     type: 'jsonb',

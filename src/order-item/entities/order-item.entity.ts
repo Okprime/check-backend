@@ -16,9 +16,6 @@ export class OrderItem {
   id: number;
 
   @Column({ type: 'int', width: 10, nullable: false })
-  totalAmount: number;
-
-  @Column({ type: 'int', width: 10, nullable: false })
   quantity: number;
 
   @ManyToOne(() => Menu)

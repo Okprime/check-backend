@@ -8,6 +8,8 @@ import {
   Delete,
   UseGuards,
   Res,
+  ParseIntPipe,
+  BadRequestException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthUser } from '../common/decorators/auth.decorator';
@@ -42,22 +44,38 @@ export class CartController {
   }
 
   @Get()
-  findAll() {
+  async findAll(@AuthUser() user: User) {
+    await this.handleRestriction(user);
     return this.cartService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.cartService.findOne(+id);
+  @Get('restaurant/:id')
+  findByRestaurant(@Param('id', ParseIntPipe) id: number) {
+    return this.cartService.findByRestaurant(id);
+  }
+
+  @Get('user')
+  findByUser(@AuthUser() user: User) {
+    return this.cartService.findByUser(user);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCartDto: UpdateCartDto) {
-    return this.cartService.update(+id, updateCartDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateCartDto: UpdateCartDto,
+  ) {
+    return this.cartService.update(id, updateCartDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.cartService.remove(+id);
+  }
+
+  async handleRestriction(user: User) {
+    if (user.role === 'user')
+      throw new BadRequestException(
+        'Sorry, only an admin can perform this action',
+      );
   }
 }
