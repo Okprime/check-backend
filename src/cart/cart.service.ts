@@ -36,9 +36,13 @@ export class CartService {
       restaurantId,
     );
 
-    const menuItemsId = [];
-    const ordersIds = [];
+    const orderOrder = [];
+
     for (const order of orders) {
+      const menuItemsId = [];
+      const ordersIds = [];
+      const ordeItemsIds = [];
+
       const orderItems = order.items;
       for (const item of orderItems) {
         const menu = await this.menuService.findOne(item.menuId);
@@ -51,11 +55,15 @@ export class CartService {
         };
 
         // save menu items
-        await this.orderItemService.saveOrderItem(orderItemPayload);
+        const orderItemDetail = await this.orderItemService.saveOrderItem(
+          orderItemPayload,
+        );
+        ordeItemsIds.push(orderItemDetail.id);
       }
 
       const orderItemDetails = await this.orderItemService.findByMenuIds(
         menuItemsId,
+        ordeItemsIds,
       );
 
       const orderPayload = {
@@ -70,18 +78,19 @@ export class CartService {
       ordersIds.push(orderResult.id);
 
       const orderDetails = await this.orderService.findByIds(ordersIds);
-
-      const cartPayload = {
-        restaurant: restaurantDetails,
-        table,
-        totalAmount,
-        orders: orderDetails,
-        user,
-      };
-
-      // save cart
-      await this.cartRepository.save(cartPayload);
+      orderOrder.push(...orderDetails);
     }
+
+    const cartPayload = {
+      restaurant: restaurantDetails,
+      table,
+      totalAmount,
+      orders: orderOrder,
+      user,
+    };
+
+    // save cart
+    await this.cartRepository.save(cartPayload);
   }
 
   getAllCarts(queryParams: GetAllCartQueryParams) {

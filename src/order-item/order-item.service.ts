@@ -33,11 +33,12 @@ export class OrderItemService {
     return this.orderItemRepository.save({ ...payload });
   }
 
-  findByMenuIds(ids: number[]) {
+  findByMenuIds(ids: number[], orderItemIds?: number[]) {
     return this.orderItemRepository.find({
       relations: ['menu'],
       where: {
         menu: In(ids),
+        id: In(orderItemIds),
       },
     });
   }

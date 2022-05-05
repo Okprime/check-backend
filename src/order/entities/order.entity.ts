@@ -1,4 +1,3 @@
-import { Menu } from '../../menu/entities/menu.entity';
 import { User } from '../../user/entities/user.entity';
 import {
   Column,

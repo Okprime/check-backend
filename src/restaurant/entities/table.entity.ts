@@ -11,8 +11,8 @@ import { Restaurant } from './restaurant.entity';
 
 @Entity()
 export class Table {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @ManyToOne(() => Restaurant, (restaurant) => restaurant.tables)
   @JoinColumn({ name: 'restaurant_id' })

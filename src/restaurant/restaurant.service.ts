@@ -6,6 +6,7 @@ import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
 import { Restaurant } from './entities/restaurant.entity';
 import { RestaurantPayload } from './types/restaurant.types';
 import { UsersService } from '../user/user.service';
+import { TableService } from './table.service';
 
 @Injectable()
 export class RestaurantService {
@@ -13,9 +14,10 @@ export class RestaurantService {
     @InjectRepository(Restaurant)
     private restaurantRepository: Repository<Restaurant>,
     private usersService: UsersService,
+    private tableService: TableService,
   ) {}
   async create(createRestaurantDto: CreateRestaurantDto): Promise<Restaurant> {
-    const { managerEmail } = createRestaurantDto;
+    const { managerEmail, noOfTables } = createRestaurantDto;
 
     const managerDetails = await this.usersService.findByEmail(managerEmail);
 
@@ -24,8 +26,14 @@ export class RestaurantService {
       manager: managerDetails,
     };
 
-    // create unique tables with the number
-    return this.restaurantRepository.save(payload);
+    const restautantDetails = await this.restaurantRepository.save(payload);
+
+    await this.tableService.handleCreatingTablesBasedOnNumber(
+      noOfTables,
+      restautantDetails,
+    );
+
+    return restautantDetails;
   }
 
   findAll(): Promise<Restaurant[]> {
