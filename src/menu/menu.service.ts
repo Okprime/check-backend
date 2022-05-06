@@ -8,6 +8,7 @@ import { Menu } from './entities/menu.entity';
 import { MenuPayload } from './types/menu.types';
 import { CategoryService } from '../category/category.service';
 import { GetMenuQueryParams } from './dto/get-menu-query-params.dto';
+import { S3Service } from '../common/services/s3/s3.service';
 
 @Injectable()
 export class MenuService {
@@ -16,10 +17,22 @@ export class MenuService {
     private menuRepository: Repository<Menu>,
     private restaurantService: RestaurantService,
     private categoryService: CategoryService,
+    private s3Service: S3Service,
   ) {}
 
-  async create(createMenuDto: CreateMenuDto): Promise<Menu> {
-    const { restaurantId, categoryId } = createMenuDto;
+  async create(createMenuDto: any): Promise<Menu> {
+    const {
+      buffer,
+      originalname,
+      name,
+      description,
+      restaurantId,
+      categoryId,
+      price,
+    } = createMenuDto;
+
+    const imageUrl = await this.s3Service.uploadFile(buffer, originalname);
+
     const restaurantDetails = await this.restaurantService.findOne(
       restaurantId,
     );
@@ -27,9 +40,12 @@ export class MenuService {
     const categoryDetails = await this.categoryService.findOne(categoryId);
 
     const payload: MenuPayload = {
-      ...createMenuDto,
+      name,
+      description,
+      image: `${imageUrl}`,
       restaurant: restaurantDetails,
       category: categoryDetails,
+      price,
     };
 
     return this.menuRepository.save(payload);

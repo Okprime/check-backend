@@ -8,16 +8,43 @@ import {
   Delete,
   UseGuards,
   BadRequestException,
+  UseInterceptors,
+  UploadedFile,
+  NestInterceptor,
+  Injectable,
+  ExecutionContext,
+  CallHandler,
 } from '@nestjs/common';
 import { RestaurantService } from './restaurant.service';
-import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { RestaurantDTO } from './dto/restaurant.dto';
 import { JwtAuthGuard } from '../common/guards/jwt.guard';
 import { AuthUser } from '../common/decorators/auth.decorator';
 import { User } from '../user/entities/user.entity';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Observable } from 'rxjs';
+// import { thss } from 'src/common/decorators/file.upload.decorator';
+
+@Injectable()
+class FileExtender implements NestInterceptor {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    const req = context.switchToHttp().getRequest();
+    req.file['name'] = req.body.name;
+    req.file['address'] = req.body.address;
+    req.file['city'] = req.body.city;
+    req.file['managerEmail'] = req.body.managerEmail;
+    req.file['noOfTables'] = Number(req.body.noOfTables);
+    return next.handle();
+  }
+}
 
 @ApiTags('restaurant')
 @Controller('restaurant')
@@ -31,27 +58,28 @@ export class RestaurantController {
     type: RestaurantDTO,
   })
   @Post()
-  // @ApiConsumes('multipart/form-data')
-  // @ApiBody({
-  //   schema: {
-  //     type: 'object',
-  //     properties: {
-  //       image: {
-  //         type: 'string',
-  //         format: 'binary',
-  //       },
-  //     },
-  //   },
-  // })
-  async create(
-    @Body() createRestaurantDto: CreateRestaurantDto,
-    @AuthUser() user: User,
-  ) {
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string' },
+        address: { type: 'string' },
+        city: { type: 'string' },
+        managerEmail: { type: 'string' },
+        noOfTables: { type: 'integer' },
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @UseInterceptors(FileExtender)
+  @UseInterceptors(FileInterceptor('file'))
+  async create(@UploadedFile('file') file, @AuthUser() user: User) {
     await this.handleRestriction(user);
-    return plainToClass(
-      RestaurantDTO,
-      this.restaurantService.create(createRestaurantDto),
-    );
+    return plainToClass(RestaurantDTO, this.restaurantService.create(file));
   }
 
   @ApiOkResponse({

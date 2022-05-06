@@ -22,7 +22,7 @@ export class Restaurant {
   name: string;
 
   @Column({ type: 'varchar', length: 300, nullable: true })
-  image?: string;
+  image: string;
 
   @Column({ type: 'varchar', length: 300, nullable: false })
   address: string;

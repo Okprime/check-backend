@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
 import { Restaurant } from './entities/restaurant.entity';
 import { RestaurantPayload } from './types/restaurant.types';
 import { UsersService } from '../user/user.service';
 import { TableService } from './table.service';
+import { S3Service } from '../common/services/s3/s3.service';
 
 @Injectable()
 export class RestaurantService {
@@ -15,15 +15,30 @@ export class RestaurantService {
     private restaurantRepository: Repository<Restaurant>,
     private usersService: UsersService,
     private tableService: TableService,
+    private s3Service: S3Service,
   ) {}
-  async create(createRestaurantDto: CreateRestaurantDto): Promise<Restaurant> {
-    const { managerEmail, noOfTables } = createRestaurantDto;
+  async create(file: any): Promise<Restaurant> {
+    const {
+      managerEmail,
+      noOfTables,
+      buffer,
+      originalname,
+      name,
+      address,
+      city,
+    } = file;
+
+    const imageUrl = await this.s3Service.uploadFile(buffer, originalname);
 
     const managerDetails = await this.usersService.findByEmail(managerEmail);
 
     const payload: RestaurantPayload = {
-      ...createRestaurantDto,
+      noOfTables,
+      name,
+      address,
+      city,
       manager: managerDetails,
+      image: `${imageUrl}`,
     };
 
     const restautantDetails = await this.restaurantRepository.save(payload);
@@ -34,6 +49,7 @@ export class RestaurantService {
     );
 
     return restautantDetails;
+    return;
   }
 
   findAll(): Promise<Restaurant[]> {

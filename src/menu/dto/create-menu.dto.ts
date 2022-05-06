@@ -17,7 +17,7 @@ export class CreateMenuDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  description?: string;
+  description: string;
 
   @ApiProperty()
   @IsNumber()

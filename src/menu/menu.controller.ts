@@ -9,17 +9,45 @@ import {
   BadRequestException,
   UseGuards,
   Query,
+  UseInterceptors,
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
+  UploadedFile,
 } from '@nestjs/common';
 import { MenuService } from './menu.service';
 import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { MenuList } from './dto/menu.dto';
 import { User } from '../user/entities/user.entity';
 import { JwtAuthGuard } from '../common/guards/jwt.guard';
 import { AuthUser } from '../common/decorators/auth.decorator';
 import { GetMenuQueryParams } from './dto/get-menu-query-params.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Observable } from 'rxjs';
+// import { FileExtender } from 'src/restaurant/restaurant.controller';
+
+@Injectable()
+class FileExtender implements NestInterceptor {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    const req = context.switchToHttp().getRequest();
+    req.file['name'] = req.body.name;
+    req.file['description'] = req.body.description;
+    req.file['restaurantId'] = Number(req.body.restaurantId);
+    req.file['categoryId'] = Number(req.body.categoryId);
+    req.file['price'] = Number(req.body.categoryId);
+    return next.handle();
+  }
+}
 
 @ApiTags('menu')
 @Controller('menu')
@@ -33,9 +61,28 @@ export class MenuController {
     type: MenuList,
   })
   @Post()
-  async create(@Body() createMenuDto: CreateMenuDto, @AuthUser() user: User) {
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string' },
+        description: { type: 'string' },
+        restaurantId: { type: 'integer' },
+        categoryId: { type: 'integer' },
+        price: { type: 'price' },
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @UseInterceptors(FileExtender)
+  @UseInterceptors(FileInterceptor('file'))
+  async create(@UploadedFile('file') file, @AuthUser() user: User) {
     await this.handleRestriction(user);
-    return plainToClass(MenuList, this.menuService.create(createMenuDto));
+    return plainToClass(MenuList, this.menuService.create(file));
   }
 
   @ApiOkResponse({

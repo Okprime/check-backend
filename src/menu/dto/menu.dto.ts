@@ -71,6 +71,11 @@ export class MenuList {
 
   @Expose()
   @ApiProperty()
+  @IsString()
+  image: string;
+
+  @Expose()
+  @ApiProperty()
   @Type(() => CategoryDTO)
   category: CategoryDTO;
 

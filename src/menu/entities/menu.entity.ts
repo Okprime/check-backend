@@ -24,6 +24,9 @@ export class Menu {
   @Column({ type: 'int', width: 10, nullable: false })
   price: number;
 
+  @Column({ type: 'varchar', length: 300, nullable: true })
+  image: string;
+
   @ManyToOne(() => Category, (category) => category.menu, { eager: true })
   @JoinColumn({ name: 'category_id' })
   category: Category;
