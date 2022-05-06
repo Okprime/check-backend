@@ -28,9 +28,10 @@ export class RestaurantService {
       city,
     } = file;
 
-    const imageUrl = await this.s3Service.uploadFile(buffer, originalname);
-
-    const managerDetails = await this.usersService.findByEmail(managerEmail);
+    const [imageUrl, managerDetails] = await Promise.all([
+      await this.s3Service.uploadFile(buffer, originalname),
+      await this.usersService.findByEmail(managerEmail),
+    ]);
 
     const payload: RestaurantPayload = {
       noOfTables,
@@ -49,7 +50,6 @@ export class RestaurantService {
     );
 
     return restautantDetails;
-    return;
   }
 
   findAll(): Promise<Restaurant[]> {

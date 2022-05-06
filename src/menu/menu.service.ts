@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RestaurantService } from '../restaurant/restaurant.service';
 import { Repository } from 'typeorm';
-import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
 import { Menu } from './entities/menu.entity';
 import { MenuPayload } from './types/menu.types';
@@ -31,13 +30,11 @@ export class MenuService {
       price,
     } = createMenuDto;
 
-    const imageUrl = await this.s3Service.uploadFile(buffer, originalname);
-
-    const restaurantDetails = await this.restaurantService.findOne(
-      restaurantId,
-    );
-
-    const categoryDetails = await this.categoryService.findOne(categoryId);
+    const [imageUrl, restaurantDetails, categoryDetails] = await Promise.all([
+      await this.s3Service.uploadFile(buffer, originalname),
+      await this.restaurantService.findOne(restaurantId),
+      await this.categoryService.findOne(categoryId),
+    ]);
 
     const payload: MenuPayload = {
       name,

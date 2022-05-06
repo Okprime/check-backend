@@ -17,7 +17,6 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { MenuService } from './menu.service';
-import { CreateMenuDto } from './dto/create-menu.dto';
 import { UpdateMenuDto } from './dto/update-menu.dto';
 import {
   ApiBearerAuth,
@@ -34,7 +33,6 @@ import { AuthUser } from '../common/decorators/auth.decorator';
 import { GetMenuQueryParams } from './dto/get-menu-query-params.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Observable } from 'rxjs';
-// import { FileExtender } from 'src/restaurant/restaurant.controller';
 
 @Injectable()
 class FileExtender implements NestInterceptor {
@@ -44,7 +42,7 @@ class FileExtender implements NestInterceptor {
     req.file['description'] = req.body.description;
     req.file['restaurantId'] = Number(req.body.restaurantId);
     req.file['categoryId'] = Number(req.body.categoryId);
-    req.file['price'] = Number(req.body.categoryId);
+    req.file['price'] = Number(req.body.price);
     return next.handle();
   }
 }
