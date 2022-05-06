@@ -10,8 +10,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
-import { Table } from './table.entity';
 import { Cart } from '../../cart/entities/cart.entity';
+import { Table } from '../../table/entities/table.entity';
 
 @Entity()
 export class Restaurant {
@@ -37,7 +37,7 @@ export class Restaurant {
   @JoinColumn({ name: 'user_id' })
   manager: User;
 
-  @OneToMany(() => Table, (table) => table.restaurant, { eager: true })
+  @OneToMany(() => Table, (table) => table.restaurant)
   tables: Table[];
 
   @OneToMany(() => Menu, (menu) => menu.restaurant)

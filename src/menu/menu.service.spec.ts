@@ -5,11 +5,10 @@ import { Repository } from 'typeorm';
 import { Menu } from './entities/menu.entity';
 import { MenuService } from './menu.service';
 import { CategoryService } from '../category/category.service';
+import { S3Service } from '../common/services/s3/s3.service';
 
 describe('MenuService', () => {
   let service: MenuService;
-  let restaurantService: RestaurantService;
-  let categoryService: CategoryService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -29,6 +28,12 @@ describe('MenuService', () => {
           provide: CategoryService,
           useValue: {
             findOne: jest.fn(),
+          },
+        },
+        {
+          provide: S3Service,
+          useValue: {
+            uploadFile: jest.fn(),
           },
         },
       ],

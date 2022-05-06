@@ -4,6 +4,8 @@ import { UsersService } from '../user/user.service';
 import { Repository } from 'typeorm';
 import { Restaurant } from './entities/restaurant.entity';
 import { RestaurantService } from './restaurant.service';
+import { TableService } from '../table/table.service';
+import { S3Service } from '../common/services/s3/s3.service';
 
 describe('RestaurantService', () => {
   let service: RestaurantService;
@@ -20,6 +22,18 @@ describe('RestaurantService', () => {
           provide: UsersService,
           useValue: {
             findByEmail: jest.fn(),
+          },
+        },
+        {
+          provide: TableService,
+          useValue: {
+            handleCreatingTablesBasedOnNumber: jest.fn(),
+          },
+        },
+        {
+          provide: S3Service,
+          useValue: {
+            uploadFile: jest.fn(),
           },
         },
       ],

@@ -5,8 +5,8 @@ import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
 import { Restaurant } from './entities/restaurant.entity';
 import { RestaurantPayload } from './types/restaurant.types';
 import { UsersService } from '../user/user.service';
-import { TableService } from './table.service';
 import { S3Service } from '../common/services/s3/s3.service';
+import { TableService } from '../table/table.service';
 
 @Injectable()
 export class RestaurantService {

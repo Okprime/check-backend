@@ -49,7 +49,7 @@ export class MenuService {
   }
 
   findAll(queryParams: GetMenuQueryParams): Promise<Menu[]> {
-    const { limit, offset } = queryParams;
+    const { offset = 0, limit = 10 } = queryParams;
     return this.menuRepository.find({
       relations: ['category'],
       where: {

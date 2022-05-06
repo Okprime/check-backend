@@ -1,3 +1,4 @@
+import { Restaurant } from '../../restaurant/entities/restaurant.entity';
 import {
   Column,
   CreateDateColumn,
@@ -7,7 +8,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Restaurant } from './restaurant.entity';
 
 @Entity()
 export class Table {
@@ -18,8 +18,8 @@ export class Table {
   @JoinColumn({ name: 'restaurant_id' })
   restaurant: Restaurant;
 
-  @Column({ type: 'boolean', default: false })
-  isDeleted: boolean;
+  @Column({ type: 'int', width: 10, nullable: true })
+  tableNumber: number;
 
   @Column()
   @CreateDateColumn()

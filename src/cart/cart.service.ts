@@ -94,7 +94,7 @@ export class CartService {
   }
 
   getAllCarts(queryParams: GetAllCartQueryParams) {
-    const { limit, offset, status } = queryParams;
+    const { offset = 0, limit = 10, status } = queryParams;
     return this.cartRepository.find({
       where: {
         status,
@@ -112,7 +112,7 @@ export class CartService {
   }
 
   getAllCartForAUser(user: User, queryParams: GetCartQueryParams) {
-    const { limit, offset } = queryParams;
+    const { offset = 0, limit = 10 } = queryParams;
     return this.cartRepository.find({
       where: {
         user,
@@ -126,7 +126,7 @@ export class CartService {
   }
 
   getAllCartForARestaurant(id: number, queryParams: GetCartQueryParams) {
-    const { limit, offset } = queryParams;
+    const { offset = 0, limit = 10 } = queryParams;
     return this.cartRepository.find({
       where: {
         restaurant: id,

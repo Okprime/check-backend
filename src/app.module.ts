@@ -6,7 +6,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { getMetadataArgsStorage } from 'typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
-// import { ImageUploadModule } from './file-upload/file-upload.module';
 import { CommonModule } from './common/common.module';
 import { AccountModule } from './account/account.module';
 import { RestaurantModule } from './restaurant/restaurant.module';
@@ -15,6 +14,7 @@ import { CategoryModule } from './category/category.module';
 import { OrderModule } from './order/order.module';
 import { CartModule } from './cart/cart.module';
 import { OrderItemModule } from './order-item/order-item.module';
+import { TableModule } from './table/table.module';
 
 @Module({
   imports: [
@@ -48,6 +48,7 @@ import { OrderItemModule } from './order-item/order-item.module';
     OrderModule,
     CartModule,
     OrderItemModule,
+    TableModule,
   ],
   controllers: [AppController],
   providers: [AppService],
