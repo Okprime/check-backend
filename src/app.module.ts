@@ -31,12 +31,12 @@ import { OrderItemModule } from './order-item/order-item.module';
       autoLoadEntities: true,
       entities: getMetadataArgsStorage().tables.map((tbl) => tbl.target),
       synchronize: true,
-      // ssl: true,
-      // extra: {
-      //   ssl: {
-      //     rejectUnauthorized: false,
-      //   },
-      // },
+      ssl: true,
+      extra: {
+        ssl: {
+          rejectUnauthorized: false,
+        },
+      },
     }),
     UsersModule,
     AuthModule,
