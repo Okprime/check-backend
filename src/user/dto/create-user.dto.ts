@@ -47,4 +47,10 @@ export class CreateUserDto {
     message: 'password is too weak',
   })
   password: string;
+
+  @ApiProperty()
+  @IsDefined()
+  @IsNotEmpty()
+  @IsString()
+  deviceToken: string;
 }

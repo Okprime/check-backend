@@ -38,4 +38,8 @@ export class StrippedUser {
   @Expose()
   @ApiProperty()
   updatedAt: string;
+
+  @Expose()
+  @ApiProperty()
+  deviceToken: string;
 }
