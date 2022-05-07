@@ -48,10 +48,10 @@ export class User {
   hash?: string;
 
   @Column({ type: 'varchar', length: 10, nullable: true })
-  countryCode?: string;
+  countryCode: string;
 
   @Column({ type: 'varchar', length: 20, nullable: true })
-  phoneNumber?: string;
+  phoneNumber: string;
 
   @Column({ type: 'boolean', default: false })
   isVerified: boolean;
@@ -64,4 +64,7 @@ export class User {
 
   @OneToMany(() => Cart, (cart) => cart.user)
   myCarts: Cart[];
+
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  deviceToken: string;
 }

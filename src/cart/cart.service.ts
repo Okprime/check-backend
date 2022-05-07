@@ -11,6 +11,7 @@ import { MenuService } from '../menu/menu.service';
 import { OrderItemService } from '../order-item/order-item.service';
 import { GetAllCartQueryParams } from './dto/get-all-cart-query-param.dto';
 import { GetCartQueryParams } from './dto/get-cart-query-param.dto';
+import { PushService } from '../common/services/push/push.service';
 
 @Injectable()
 export class CartService {
@@ -21,6 +22,7 @@ export class CartService {
     private restaurantService: RestaurantService,
     private menuService: MenuService,
     private orderItemService: OrderItemService,
+    private pushService: PushService,
   ) {}
 
   async saveCart(payload: any) {
@@ -91,6 +93,16 @@ export class CartService {
 
     // save cart
     await this.cartRepository.save(cartPayload);
+
+    // send push notification
+    const message = {
+      data: {
+        score: '850',
+        message: 'This is a test push',
+      },
+      token: user.deviceToken,
+    };
+    await this.pushService.sendPush(message);
   }
 
   getAllCarts(queryParams: GetAllCartQueryParams) {

@@ -7,6 +7,7 @@ import { Cart } from './entities/cart.entity';
 import { RestaurantService } from '../restaurant/restaurant.service';
 import { MenuService } from '../menu/menu.service';
 import { OrderItemService } from '../order-item/order-item.service';
+import { PushService } from '../common/services/push/push.service';
 
 describe('CartService', () => {
   let service: CartService;
@@ -43,6 +44,12 @@ describe('CartService', () => {
           useValue: {
             saveOrderItem: jest.fn(),
             findByMenuIds: jest.fn(),
+          },
+        },
+        {
+          provide: PushService,
+          useValue: {
+            sendPush: jest.fn(),
           },
         },
       ],

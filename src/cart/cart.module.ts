@@ -6,7 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrderModule } from '../order/order.module';
 import { RestaurantModule } from '../restaurant/restaurant.module';
 import { MenuModule } from '../menu/menu.module';
-import { OrderItemModule } from 'src/order-item/order-item.module';
+import { OrderItemModule } from '../order-item/order-item.module';
+import { CommonModule } from '../common/common.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { OrderItemModule } from 'src/order-item/order-item.module';
     RestaurantModule,
     MenuModule,
     OrderItemModule,
+    CommonModule,
   ],
   controllers: [CartController],
   providers: [CartService],

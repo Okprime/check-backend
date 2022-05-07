@@ -1,4 +1,12 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateMenuDto } from './create-menu.dto';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsBoolean, IsNumber } from 'class-validator';
 
-export class UpdateMenuDto extends PartialType(CreateMenuDto) {}
+export class UpdateMenuDto {
+  @ApiPropertyOptional({ default: false })
+  @IsBoolean()
+  isAvailable: boolean;
+
+  @ApiPropertyOptional()
+  @IsNumber()
+  price: number;
+}

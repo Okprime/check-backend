@@ -6,6 +6,7 @@ import { RedisService } from './services/redis/redis.service';
 import { SmsService } from './services/sms/sms.service';
 import { UsersModule } from '../user/user.module';
 import { S3Service } from './services/s3/s3.service';
+import { PushService } from './services/push/push.service';
 
 @Module({
   imports: [
@@ -15,7 +16,21 @@ import { S3Service } from './services/s3/s3.service';
     }),
     UsersModule,
   ],
-  providers: [RedisService, ConfigService, OTPService, SmsService, S3Service],
-  exports: [RedisService, ConfigService, OTPService, SmsService, S3Service],
+  providers: [
+    RedisService,
+    ConfigService,
+    OTPService,
+    SmsService,
+    S3Service,
+    PushService,
+  ],
+  exports: [
+    RedisService,
+    ConfigService,
+    OTPService,
+    SmsService,
+    S3Service,
+    PushService,
+  ],
 })
 export class CommonModule {}
