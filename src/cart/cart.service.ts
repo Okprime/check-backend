@@ -91,16 +91,23 @@ export class CartService {
       user,
     };
 
+    const managerToken = restaurantDetails.manager.deviceToken;
+
     // save cart
     await this.cartRepository.save(cartPayload);
 
     // send push notification
+    const msg = {
+      title: 'Order Alert',
+      body: 'Someone just placed an order from table 4',
+      btnName: 'Ok',
+      btnAction: 'close',
+    };
+
     const message = {
-      data: {
-        score: '850',
-        message: 'This is a test push',
-      },
-      token: user.deviceToken,
+      data: msg,
+      notification: msg,
+      token: managerToken,
     };
     await this.pushService.sendPush(message);
   }
