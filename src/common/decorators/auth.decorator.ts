@@ -20,6 +20,7 @@ export const AuthUser = createParamDecorator(
       phoneNumber: `${request.user.countryCode}${request.user.phoneNumber}`,
       createdAt: request.user.createdAt,
       updatedAt: request.user.updatedAt,
+      deviceToken: request.user.deviceToken,
     };
   },
 );

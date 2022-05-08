@@ -65,6 +65,6 @@ export class User {
   @OneToMany(() => Cart, (cart) => cart.user)
   myCarts: Cart[];
 
-  @Column({ type: 'varchar', length: 20, nullable: true })
+  @Column({ type: 'varchar', length: 700, nullable: true })
   deviceToken: string;
 }

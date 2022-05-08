@@ -29,7 +29,7 @@ export class AuthController {
   @HttpCode(200)
   @Post('login')
   async login(@Request() req, @Body() loginDto: LoginDto) {
-    const result = await this.authService.login(req.user);
+    const result = await this.authService.login(req.user, loginDto);
     return result;
   }
 

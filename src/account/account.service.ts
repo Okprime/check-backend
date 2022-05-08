@@ -18,9 +18,10 @@ export class AccountService {
       password?: string;
       phoneNumber?: string;
       role?: string;
+      deviceToken: string;
     },
   ) {
-    const { email, phoneNumber, password, role } = payload;
+    const { email, phoneNumber, password, role, deviceToken } = payload;
 
     let existingUser: User;
 
@@ -50,6 +51,7 @@ export class AccountService {
       salt,
       hash,
       role,
+      deviceToken,
     });
 
     // send otp verification

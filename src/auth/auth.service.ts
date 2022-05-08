@@ -13,6 +13,7 @@ import validator from 'validator';
 import { RedisService } from '../common/services/redis/redis.service';
 import { OTPService } from '../common/services/otp/otp.service';
 import PhoneNumber from 'awesome-phonenumber';
+import { LoginDto } from './dto/auth-login.dto';
 
 @Injectable()
 export class AuthService {
@@ -23,12 +24,20 @@ export class AuthService {
     private otpService: OTPService,
   ) {}
 
-  async login(user: any) {
+  async login(user: any, loginDto?: LoginDto) {
+    const { deviceToken } = loginDto;
     const payload = {
       sub: user.id,
       email: user.email,
       phone: `${user.countryCode}${user.phoneNumber}`,
     };
+
+    // save deviceId token on login
+    if (user.deviceToken === null) {
+      await this.usersService.updateUserProfile(user.id, { deviceToken });
+    } else {
+      await this.usersService.updateUserProfile(user.id, { deviceToken });
+    }
 
     // Make refresh token
     const refreshToken = this.jwtService.sign(payload, {

@@ -14,4 +14,5 @@ export interface UserPayload {
   phoneNumber?: string;
   password?: string;
   isVerified?: boolean;
+  deviceToken?: string;
 }
