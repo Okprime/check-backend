@@ -17,7 +17,26 @@ export class RefreshStrategy extends PassportStrategy(
   }
 
   async validate(payload: any) {
-    const { email, firstName, lastName, phoneNumber } = payload;
-    return { id: payload.sub, email, firstName, lastName, phoneNumber };
+    const {
+      email,
+      firstName,
+      lastName,
+      phone,
+      role,
+      deviceToken,
+      createdAt,
+      updatedAt,
+    } = payload;
+    return {
+      id: payload.sub,
+      email,
+      firstName,
+      lastName,
+      phoneNumber: phone,
+      role,
+      deviceToken,
+      createdAt,
+      updatedAt,
+    };
   }
 }

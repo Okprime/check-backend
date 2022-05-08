@@ -13,7 +13,6 @@ import validator from 'validator';
 import { RedisService } from '../common/services/redis/redis.service';
 import { OTPService } from '../common/services/otp/otp.service';
 import PhoneNumber from 'awesome-phonenumber';
-import { LoginDto } from './dto/auth-login.dto';
 
 @Injectable()
 export class AuthService {
@@ -24,18 +23,21 @@ export class AuthService {
     private otpService: OTPService,
   ) {}
 
-  async login(user: any, loginDto?: LoginDto) {
+  async login(user: any, loginDto?: any) {
     const { deviceToken } = loginDto;
     const payload = {
       sub: user.id,
       email: user.email,
       phone: `${user.countryCode}${user.phoneNumber}`,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      deviceToken: user.deviceToken,
     };
 
-    // save deviceId token on login
-    if (user.deviceToken === null) {
-      await this.usersService.updateUserProfile(user.id, { deviceToken });
-    } else {
+    if (deviceToken) {
       await this.usersService.updateUserProfile(user.id, { deviceToken });
     }
 
@@ -103,6 +105,7 @@ export class AuthService {
 
   async refreshToken(user, token) {
     const refreshToken = await this.redisService.get(token);
+
     if (!refreshToken) {
       throw new BadRequestException('Invalid refresh token');
     }
@@ -113,6 +116,6 @@ export class AuthService {
       throw new UnauthorizedException();
     }
     await this.redisService.delete(refreshToken);
-    return this.login(user);
+    return this.login(user, user.deviceToken);
   }
 }

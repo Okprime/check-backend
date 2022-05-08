@@ -59,6 +59,6 @@ export class AccountService {
       `${phoneDetails.countryCode}${phoneNumber}`,
     );
 
-    return this.authService.login(user);
+    return this.authService.login(user, deviceToken);
   }
 }
