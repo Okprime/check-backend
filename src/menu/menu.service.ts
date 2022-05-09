@@ -90,4 +90,17 @@ export class MenuService {
     await this.menuRepository.delete(id);
     return 'Success';
   }
+
+  public async searchMenu(
+    query: string,
+    limit: number,
+    offset: number,
+  ): Promise<Menu[]> {
+    return this.menuRepository
+      .createQueryBuilder('menu')
+      .where('menu.name ILIKE :query', { query: `%${query}%` })
+      .limit(limit)
+      .offset(offset)
+      .getMany();
+  }
 }

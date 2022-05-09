@@ -15,6 +15,7 @@ import { OrderModule } from './order/order.module';
 import { CartModule } from './cart/cart.module';
 import { OrderItemModule } from './order-item/order-item.module';
 import { TableModule } from './table/table.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { TableModule } from './table/table.module';
     CartModule,
     OrderItemModule,
     TableModule,
+    SearchModule,
   ],
   controllers: [AppController],
   providers: [AppService],

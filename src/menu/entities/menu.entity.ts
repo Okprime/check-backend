@@ -19,7 +19,7 @@ export class Menu {
   name: string;
 
   @Column({ type: 'varchar', length: 300, nullable: true })
-  description?: string;
+  description: string;
 
   @Column({ type: 'int', width: 10, nullable: false })
   price: number;
