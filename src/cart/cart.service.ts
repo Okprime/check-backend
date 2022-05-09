@@ -138,6 +138,7 @@ export class CartService {
   getAllCartForAUser(user: User, queryParams: GetCartQueryParams) {
     const { offset = 0, limit = 10 } = queryParams;
     return this.cartRepository.find({
+      relations: ['restaurant'],
       where: {
         user,
       },
