@@ -94,22 +94,21 @@ export class CartService {
     // save cart
     await this.cartRepository.save(cartPayload);
 
-    // const managerToken = restaurantDetails.manager.deviceToken;
+    const managerToken = restaurantDetails.manager.deviceToken;
 
-    // // send push notification
-    // const msg = {
-    //   title: 'Order Alert',
-    //   body: 'Someone just placed an order from table 4',
-    //   btnName: 'Ok',
-    //   btnAction: 'close',
-    // };
+    // send push notification
+    const pushPayload = {
+      notification: {
+        title: 'Order Alert',
+        body: `${user.firstName} ${user.lastName} just placed an order from table ${table}`,
+      },
+      data: {
+        btnName: 'Ok',
+        btnAction: 'close',
+      },
+    };
 
-    // const message = {
-    //   data: msg,
-    //   notification: msg,
-    //   token: managerToken,
-    // };
-    // await this.pushService.sendPush(message);
+    await this.pushService.sendPush(managerToken, pushPayload);
   }
 
   getAllCarts(queryParams: GetAllCartQueryParams) {

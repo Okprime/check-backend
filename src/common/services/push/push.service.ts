@@ -15,8 +15,12 @@ export class PushService {
     });
   }
 
-  async sendPush(pushPayload) {
-    const { data, token } = pushPayload;
-    await admin.messaging().sendToDevice(token, data);
+  async sendPush(token: string, payload: any) {
+    try {
+      const pushResult = await admin.messaging().sendToDevice(token, payload);
+      console.log('pushResult', pushResult);
+    } catch (error) {
+      console.log('error from push', error);
+    }
   }
 }
