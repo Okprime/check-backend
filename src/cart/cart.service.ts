@@ -174,7 +174,7 @@ export class CartService {
       const pushPayload = {
         notification: {
           title: 'Order Processing Alert',
-          body: `Hi ${cartDetails.user.firstName} ${cartDetails.user.lastName} Your tasty meal is being served. Please relax and stay on table ${cartDetails.table} while I put everything together for you☺️ `,
+          body: `Hi ${cartDetails.user.firstName} ${cartDetails.user.lastName} Your tasty meal is being served. Please relax and stay on table ${cartDetails.table} while we put everything together for you☺️ `,
         },
         data: {
           btnName: 'Ok',
@@ -184,7 +184,10 @@ export class CartService {
 
       console.log('pushPayload-processing', pushPayload);
 
-      await this.pushService.sendPush(cartDetails.user.id, pushPayload);
+      await this.pushService.sendPush(
+        cartDetails.user.deviceToken,
+        pushPayload,
+      );
       await this.cartRepository.update(id, updateCartDto);
     } else {
       const pushPayload = {
@@ -201,7 +204,10 @@ export class CartService {
 
       console.log('pushPayload-completed', pushPayload);
 
-      await this.pushService.sendPush(cartDetails.user.id, pushPayload);
+      await this.pushService.sendPush(
+        cartDetails.user.deviceToken,
+        pushPayload,
+      );
       await this.cartRepository.update(id, updateCartDto);
     }
   }
