@@ -12,6 +12,7 @@ import { OrderItemService } from '../order-item/order-item.service';
 import { GetAllCartQueryParams } from './dto/get-all-cart-query-param.dto';
 import { GetCartQueryParams } from './dto/get-cart-query-param.dto';
 import { PushService } from '../common/services/push/push.service';
+import { CartStatus } from './types/cart.types';
 
 @Injectable()
 export class CartService {
@@ -126,7 +127,12 @@ export class CartService {
   }
 
   findOne(id: number) {
-    return this.cartRepository.findOne(id);
+    return this.cartRepository.findOne({
+      relations: ['user'],
+      where: {
+        id,
+      },
+    });
   }
 
   getAllCartForAUser(user: User, queryParams: GetCartQueryParams) {
@@ -157,8 +163,47 @@ export class CartService {
     });
   }
 
-  async update(id: number, updateCartDto: UpdateCartDto) {
-    return this.cartRepository.update(id, updateCartDto);
+  async updateCart(id: number, updateCartDto: UpdateCartDto) {
+    const { status } = updateCartDto;
+
+    // get cart by id to get the user token
+    const cartDetails = await this.findOne(id);
+
+    if (status === CartStatus.PROCESSING) {
+      // send push notification
+      const pushPayload = {
+        notification: {
+          title: 'Order Processing Alert',
+          body: `Hi ${cartDetails.user.firstName} ${cartDetails.user.lastName} Your tasty meal is being served. Please relax and stay on table ${cartDetails.table} while I put everything together for you☺️ `,
+        },
+        data: {
+          btnName: 'Ok',
+          btnAction: 'close',
+        },
+      };
+
+      console.log('pushPayload-processing', pushPayload);
+
+      await this.pushService.sendPush(cartDetails.user.id, pushPayload);
+      await this.cartRepository.update(id, updateCartDto);
+    } else {
+      const pushPayload = {
+        // send push notification
+        notification: {
+          title: 'Your Order is on its way!',
+          body: `Hi ${cartDetails.user.firstName} ${cartDetails.user.lastName} Your order is completed, we hope you had a fantastic experience today😜. Enjoy your meal!🥘 `,
+        },
+        data: {
+          btnName: 'Ok',
+          btnAction: 'close',
+        },
+      };
+
+      console.log('pushPayload-completed', pushPayload);
+
+      await this.pushService.sendPush(cartDetails.user.id, pushPayload);
+      await this.cartRepository.update(id, updateCartDto);
+    }
   }
 
   remove(id: number) {

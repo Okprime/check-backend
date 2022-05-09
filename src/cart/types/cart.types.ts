@@ -1,5 +1,6 @@
 export enum CartStatus {
   PENDING = 'PENDING',
+  PROCESSING = 'PROCESSING',
   COMPLETED = 'COMPLETED',
 }
 

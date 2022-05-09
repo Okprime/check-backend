@@ -74,9 +74,9 @@ export class CartController {
     @Res() res,
   ) {
     await this.handleRestriction(user);
-    await this.cartService.update(id, updateCartDto);
+    await this.cartService.updateCart(id, updateCartDto);
     return res.status(200).json({
-      message: 'This order has been marked as completed',
+      message: 'Success',
       error: false,
     });
   }

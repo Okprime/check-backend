@@ -20,6 +20,9 @@ export class Cart {
   @Column({ type: 'int', width: 10, nullable: false })
   totalAmount: number;
 
+  @Column({ type: 'int', width: 10, nullable: true })
+  table: number;
+
   @ManyToOne(() => Restaurant, (restaurant) => restaurant.cart)
   @JoinColumn({ name: 'restaurant_id' })
   restaurant: Restaurant;
