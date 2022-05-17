@@ -32,7 +32,7 @@ export class MenuService {
 
     const [imageUrl, restaurantDetails, categoryDetails] = await Promise.all([
       await this.s3Service.uploadFile(buffer, originalname),
-      await this.restaurantService.findOne(restaurantId),
+      await this.restaurantService.findOneDependingOnUserRole(restaurantId),
       await this.categoryService.findOne(categoryId),
     ]);
 

@@ -63,14 +63,21 @@ export class RestaurantService {
     });
   }
 
-  async findOne(id: number): Promise<Restaurant> {
-    const result = await this.restaurantRepository.findOne({
-      relations: ['menu', 'manager'],
-      where: {
-        id,
-        isDeleted: false,
-      },
-    });
+  async findOneDependingOnUserRole(
+    id: number,
+    isAvailable?: boolean,
+  ): Promise<Restaurant> {
+    const query = await this.restaurantRepository
+      .createQueryBuilder('restaurant')
+      .where('restaurant.id = :restaurant', { restaurant: id })
+      .leftJoinAndSelect('restaurant.menu', 'menu')
+      .leftJoinAndSelect('restaurant.manager', 'manager');
+
+    if (isAvailable) {
+      query.andWhere('menu.isAvailable is true');
+    }
+
+    const result = await query.getOne();
 
     if (result === undefined)
       throw new NotFoundException('Restaurant not found');

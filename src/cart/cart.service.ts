@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrderService } from '../order/order.service';
 import { Repository } from 'typeorm';
@@ -35,9 +35,8 @@ export class CartService {
 
     const { restaurantId, orders, table, totalAmount } = payload;
 
-    const restaurantDetails = await this.restaurantService.findOne(
-      restaurantId,
-    );
+    const restaurantDetails =
+      await this.restaurantService.findOneDependingOnUserRole(restaurantId);
 
     const orderOrder = [];
 
@@ -165,7 +164,7 @@ export class CartService {
   }
 
   async updateCart(id: number, updateCartDto: UpdateCartDto) {
-    const { status } = updateCartDto;
+    const { status, userId } = updateCartDto;
 
     // get cart by id to get the user token
     const cartDetails = await this.findOne(id);
@@ -189,7 +188,7 @@ export class CartService {
         cartDetails.user.deviceToken,
         pushPayload,
       );
-      await this.cartRepository.update(id, updateCartDto);
+      await this.cartRepository.update(id, { status });
     } else {
       const pushPayload = {
         // send push notification
@@ -209,7 +208,11 @@ export class CartService {
         cartDetails.user.deviceToken,
         pushPayload,
       );
-      await this.cartRepository.update(id, updateCartDto);
+
+      if (userId !== cartDetails.user.id) {
+        throw new BadRequestException('Sorry, wrong order');
+      }
+      await this.cartRepository.update(id, { status });
     }
   }
 

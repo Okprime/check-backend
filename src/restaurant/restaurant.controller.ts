@@ -96,8 +96,17 @@ export class RestaurantController {
     type: RestaurantDTO,
   })
   @Get(':id')
-  async findOne(@Param('id') id: number) {
-    return plainToClass(RestaurantDTO, this.restaurantService.findOne(id));
+  async findOne(@Param('id') id: number, @AuthUser() user: User) {
+    if (user.role === 'user') {
+      return plainToClass(
+        RestaurantDTO,
+        this.restaurantService.findOneDependingOnUserRole(id, true),
+      );
+    }
+    return plainToClass(
+      RestaurantDTO,
+      this.restaurantService.findOneDependingOnUserRole(id),
+    );
   }
 
   @Patch(':id')
