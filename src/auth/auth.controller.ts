@@ -6,6 +6,7 @@ import {
   Post,
   UseGuards,
   Res,
+  Get,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { JwtOptionalAuthGuard } from '../common/guards/jwt-optional.guard';
@@ -35,7 +36,7 @@ export class AuthController {
 
   @ApiBearerAuth()
   @UseGuards(JwtOptionalAuthGuard)
-  @Post('request-otp')
+  @Get('request-otp')
   async requestOtp(
     @Res() res,
     @Body() otpRequestDTO: OTPRequestDTO,
