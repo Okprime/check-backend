@@ -6,19 +6,19 @@ import {
   Post,
   UseGuards,
   Res,
-  Get,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { RefreshAuthGuard } from 'src/common/guards/refresh-auth.guard';
+import { JwtOptionalAuthGuard } from '../common/guards/jwt-optional.guard';
+import { RefreshAuthGuard } from '../common/guards/refresh-auth.guard';
 import { AuthUser, AuthUserData } from '../common/decorators/auth.decorator';
-import { JwtAuthGuard } from '../common/guards/jwt.guard';
 import { LocalAuthGuard } from '../common/guards/local-auth.guard';
 import { User } from '../user/entities/user.entity';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/auth-login.dto';
-import { OTPResponseDTO } from './dto/OTPResponse.dto';
 import { OTPVerificationDTO } from './dto/OTPVerification.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { OTPRequestDTO } from './dto/OTPRequest.dto';
+import { PasswordResetDto } from './dto/password-reset.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -34,14 +34,17 @@ export class AuthController {
   }
 
   @ApiBearerAuth()
-  @ApiOkResponse({
-    type: OTPResponseDTO,
-  })
-  @UseGuards(JwtAuthGuard)
-  @Get('request-otp')
-  async requestOtp(@AuthUser() user: User, @Res() res) {
-    const { phoneNumber } = user;
-    await this.authService.handleOTPRequest(phoneNumber);
+  @UseGuards(JwtOptionalAuthGuard)
+  @Post('request-otp')
+  async requestOtp(
+    @Res() res,
+    @Body() otpRequestDTO: OTPRequestDTO,
+    @AuthUser() user?: User,
+  ) {
+    const { phone } = otpRequestDTO;
+    (await user)
+      ? await this.authService.handleOTPRequest(user.phoneNumber)
+      : await this.authService.handleOTPRequest(phone);
     return res
       .status(200)
       .json({ message: 'An OTP has been sent to your phone', error: false });
@@ -49,15 +52,20 @@ export class AuthController {
 
   @ApiBearerAuth()
   @Post('verify-otp')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtOptionalAuthGuard)
   async verifyOtp(
     @Body() otpVerification: OTPVerificationDTO,
-    @AuthUser() user: User,
     @Res() res,
+    @AuthUser() user?: User,
   ) {
-    const { code } = otpVerification;
-    const { phoneNumber } = user;
-    await this.authService.handleOTPVerification(phoneNumber, code, user);
+    const { code, phone } = otpVerification;
+    (await user)
+      ? await this.authService.handleOTPVerification(
+          user.phoneNumber,
+          code,
+          user,
+        )
+      : await this.authService.handleOTPVerification(phone, code);
     return res
       .status(200)
       .json({ message: 'User has been verified', error: false });
@@ -72,5 +80,20 @@ export class AuthController {
   ) {
     const { refreshToken } = body;
     return this.authService.refreshToken(user, refreshToken);
+  }
+
+  @ApiOkResponse({
+    description: 'Needs previous phone verification',
+    status: 201,
+  })
+  @Post('password-reset')
+  async passwordReset(
+    @Body() { phone, password }: PasswordResetDto,
+    @Res() res,
+  ) {
+    await this.authService.resetPassword(phone, password);
+    return res
+      .status(200)
+      .json({ message: 'Your password has been reset', error: false });
   }
 }

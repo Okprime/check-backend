@@ -11,16 +11,18 @@ export interface RequestWithUser extends Request {
 export const AuthUser = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<RequestWithUser>();
-    return {
-      id: request.user.id,
-      firstName: request.user.firstName,
-      lastName: request.user.lastName,
-      email: request.user.email,
-      role: request.user.role,
-      phoneNumber: request.user.phoneNumber,
-      createdAt: request.user.createdAt,
-      updatedAt: request.user.updatedAt,
-      deviceToken: request.user.deviceToken,
-    };
+    return request.user
+      ? {
+          id: request.user.id,
+          firstName: request.user.firstName,
+          lastName: request.user.lastName,
+          email: request.user.email,
+          role: request.user.role,
+          phoneNumber: request.user.phoneNumber,
+          createdAt: request.user.createdAt,
+          updatedAt: request.user.updatedAt,
+          deviceToken: request.user.deviceToken,
+        }
+      : null;
   },
 );

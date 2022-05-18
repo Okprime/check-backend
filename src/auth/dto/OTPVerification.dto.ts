@@ -6,4 +6,8 @@ export class OTPVerificationDTO {
   @IsNotEmpty()
   @ApiProperty()
   code: string;
+
+  @IsString()
+  @ApiProperty()
+  phone: string;
 }

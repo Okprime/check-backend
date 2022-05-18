@@ -1,18 +1,23 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../user/entities/user.entity';
-import { PhoneDetails, UsersService } from '../user/user.service';
+import { UsersService } from '../user/user.service';
 import { appConstant } from '../common/constants/app.constant';
-import { comparePassword } from '../common/utils/crypto';
+import { comparePassword, hashPassword } from '../common/utils/crypto';
 
 import validator from 'validator';
 import { RedisService } from '../common/services/redis/redis.service';
 import { OTPService } from '../common/services/otp/otp.service';
-import PhoneNumber from 'awesome-phonenumber';
+
+export enum OTPRequestType {
+  signup = 'signup',
+  passwordReset = 'password-reset',
+}
 
 @Injectable()
 export class AuthService {
@@ -88,7 +93,15 @@ export class AuthService {
     return null;
   }
 
-  async handleOTPVerification(phoneNumber: string, code: string, user: User) {
+  async handleOTPVerification(phoneNumber: string, code: string, user?: User) {
+    if (user) {
+      return this.otpService.verifyPhone(phoneNumber, code, user);
+    }
+
+    user = await this.usersService.findByPhoneDetails(
+      await this.usersService.getPhoneDetails(phoneNumber),
+    );
+
     return this.otpService.verifyPhone(phoneNumber, code, user);
   }
 
@@ -96,11 +109,8 @@ export class AuthService {
     return this.otpService.generatePhoneVerification(phone);
   }
 
-  getPhoneDetails(phone: string): PhoneDetails {
-    const pn = new PhoneNumber(phone);
-    const countryCode = pn.getCountryCode();
-    const phoneNumber = pn.getNumber('significant');
-    return { countryCode: `+${countryCode}`, phoneNumber };
+  getPhoneNumberFromUser(user: User): string {
+    return `${user.countryCode}${user.phoneNumber}`;
   }
 
   async refreshToken(user, token) {
@@ -117,5 +127,31 @@ export class AuthService {
     }
     await this.redisService.delete(refreshToken);
     return this.login(user, user.deviceToken);
+  }
+
+  async resetPassword(phone: string, password: string) {
+    const user = await this.usersService.findByPhoneDetails(
+      await this.usersService.getPhoneDetails(phone),
+    );
+
+    const phoneNumber = this.getPhoneNumberFromUser(user);
+
+    const isVerified = await this.otpService.checkIfPhoneIsVerified(
+      phoneNumber,
+    );
+
+    if (!isVerified) {
+      throw new BadRequestException('User phone is not validated');
+    }
+
+    if (!user) {
+      throw new NotFoundException('No user with those credentials');
+    }
+
+    const { salt, hash } = await hashPassword(password);
+
+    await this.usersService.changePassword(user.id, hash, salt);
+
+    return;
   }
 }

@@ -67,4 +67,8 @@ export class UsersService {
     await this.userRepository.update(id, userPayload);
     return 'Success';
   }
+
+  async changePassword(id: string, hash: string, salt: string) {
+    return this.userRepository.update({ id }, { hash, salt });
+  }
 }
