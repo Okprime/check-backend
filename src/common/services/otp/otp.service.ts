@@ -24,7 +24,7 @@ export class OTPService {
       String(code),
       appConstant.OTP.REDIS_DURATION,
     );
-    return this.smsService.sendOTPViaHollaTags(phone, code);
+    return this.smsService.sendOTPViaBulkSMSNg(phone, code);
   }
 
   async verifyPhone(phone: string, code: string, user: User) {
