@@ -71,6 +71,7 @@ export class RestaurantService {
       .createQueryBuilder('restaurant')
       .where('restaurant.id = :restaurant', { restaurant: id })
       .leftJoinAndSelect('restaurant.menu', 'menu')
+      .leftJoinAndSelect('menu.category', 'category')
       .leftJoinAndSelect('restaurant.manager', 'manager');
 
     if (isAvailable) {

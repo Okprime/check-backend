@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { SearchService } from './search.service';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
@@ -17,11 +17,14 @@ export class SearchController {
     description: 'Return all menus by query',
     type: [SearchMenuList],
   })
-  @Get('menu')
-  searchMenu(@Query() { query, limit, offset }: SearchDTO) {
+  @Get('menu/:restaurantId')
+  searchMenu(
+    @Param('restaurantId') restaurantId: number,
+    @Query() { query, limit, offset }: SearchDTO,
+  ) {
     return plainToClass(
       SearchMenuList,
-      this.searchService.searchMenu(query, limit, offset),
+      this.searchService.searchMenu(restaurantId, query, limit, offset),
     );
   }
 }

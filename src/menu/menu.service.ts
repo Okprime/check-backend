@@ -92,13 +92,15 @@ export class MenuService {
   }
 
   public async searchMenu(
+    restaurantId: number,
     query: string,
     limit: number,
     offset: number,
   ): Promise<Menu[]> {
     return this.menuRepository
       .createQueryBuilder('menu')
-      .where('menu.name ILIKE :query', { query: `%${query}%` })
+      .where('menu.restaurant.id = :restaurant', { restaurant: restaurantId })
+      .andWhere('menu.name ILIKE :query', { query: `%${query}%` })
       .limit(limit)
       .offset(offset)
       .getMany();
