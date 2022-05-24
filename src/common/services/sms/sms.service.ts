@@ -38,7 +38,7 @@ export class SmsService {
               api_token: process.env.API_TOKEN,
               from: 'CHECK',
               to: phoneNumber,
-              body: `Dear Customer, Please use this OTP ${otp} to complete your enrollment on Check. Do not disclose this OTP to anyone. It expires in 120 seconds.`,
+              body: `Your one time pass is ${otp} and expires in 120 seconds.`,
               dnd: 2,
             },
           })
