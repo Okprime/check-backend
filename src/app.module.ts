@@ -33,12 +33,12 @@ import { TransactionModule } from './transaction/transaction.module';
       autoLoadEntities: true,
       entities: getMetadataArgsStorage().tables.map((tbl) => tbl.target),
       synchronize: true,
-      // ssl: true,
-      // extra: {
-      //   ssl: {
-      //     rejectUnauthorized: false,
-      //   },
-      // },
+      ssl: true,
+      extra: {
+        ssl: {
+          rejectUnauthorized: false,
+        },
+      },
     }),
     UsersModule,
     AuthModule,
