@@ -22,6 +22,7 @@ export const AuthUser = createParamDecorator(
           createdAt: request.user.createdAt,
           updatedAt: request.user.updatedAt,
           deviceToken: request.user.deviceToken,
+          balance: request.user.balance,
         }
       : null;
   },

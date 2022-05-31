@@ -10,6 +10,7 @@ import { Exclude } from 'class-transformer';
 import { Restaurant } from '../../restaurant/entities/restaurant.entity';
 import { Order } from '../../order/entities/order.entity';
 import { Cart } from '../../cart/entities/cart.entity';
+import { Transaction } from '../../transaction/entities/transaction.entity';
 
 @Entity()
 export class User {
@@ -67,4 +68,13 @@ export class User {
 
   @Column({ type: 'varchar', length: 700, nullable: true })
   deviceToken: string;
+
+  @OneToMany(() => Transaction, (transaction) => transaction.user)
+  myTransactions: Transaction[];
+
+  // @OneToMany(() => Shares, (shares) => shares.shareFrom)
+  // sharedByMe: Shares[];
+
+  // @OneToMany(() => Shares, (shares) => shares.shareTo)
+  // sharedToMe: Shares[];
 }

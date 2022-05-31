@@ -16,6 +16,7 @@ import { CartModule } from './cart/cart.module';
 import { OrderItemModule } from './order-item/order-item.module';
 import { TableModule } from './table/table.module';
 import { SearchModule } from './search/search.module';
+import { TransactionModule } from './transaction/transaction.module';
 
 @Module({
   imports: [
@@ -32,12 +33,12 @@ import { SearchModule } from './search/search.module';
       autoLoadEntities: true,
       entities: getMetadataArgsStorage().tables.map((tbl) => tbl.target),
       synchronize: true,
-      ssl: true,
-      extra: {
-        ssl: {
-          rejectUnauthorized: false,
-        },
-      },
+      // ssl: true,
+      // extra: {
+      //   ssl: {
+      //     rejectUnauthorized: false,
+      //   },
+      // },
     }),
     UsersModule,
     AuthModule,
@@ -51,6 +52,7 @@ import { SearchModule } from './search/search.module';
     OrderItemModule,
     TableModule,
     SearchModule,
+    TransactionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
