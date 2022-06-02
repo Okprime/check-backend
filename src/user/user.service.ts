@@ -33,11 +33,26 @@ export class UsersService {
   }
 
   async findByEmail(email: string): Promise<User> {
-    return await this.userRepository.findOne({
+    const userDetail = await this.userRepository.findOne({
       where: {
         email: email,
       },
     });
+    if (!userDetail) throw new NotFoundException('User does not exist');
+
+    return userDetail;
+  }
+
+  async findByJustPhoneNumber(phoneNumber: string): Promise<User> {
+    const userDetail = await this.userRepository.findOne({
+      where: {
+        phoneNumber,
+      },
+    });
+
+    if (!userDetail) throw new NotFoundException('User does not exist');
+
+    return userDetail;
   }
 
   getPhoneDetails(phone: string): PhoneDetails {

@@ -42,7 +42,9 @@ export class TransactionService {
     transferFrom: User,
   ) {
     const { transferToId, amount } = createTransferDto;
-    const transferToDetails = await this.usersService.getUserById(transferToId);
+    const transferToDetails = await this.usersService.findByJustPhoneNumber(
+      transferToId,
+    );
     const transactionRef = `transRefId-${nanoid(10)}`;
 
     if (transferFrom.balance < amount) {
@@ -53,7 +55,7 @@ export class TransactionService {
       // send push notification
       notification: {
         title: 'Wallet funded!',
-        body: `Hi ${transferToDetails.firstName}, your wallet has been funded with ${amount} `,
+        body: `Hi ${transferToDetails.firstName}, your wallet has been funded with ${amount} naira`,
       },
       data: {
         btnName: 'Ok',
@@ -102,13 +104,24 @@ export class TransactionService {
     );
   }
 
-  async verifyTransactionRef(verifyTransferDto: VerifyTransferDto) {
+  async verifyTransactionRef(verifyTransferDto: VerifyTransferDto, user: User) {
     try {
       const { transactionRef } = verifyTransferDto;
       const payload = { id: transactionRef };
       const response = await flw.Transaction.verify(payload);
-      console.log(response);
-      return response;
+      console.log('verification response', response);
+
+      if (response.status === 'success') {
+        return Promise.all([
+          await this.usersService.updateUserProfile(user.id, {
+            balance: response.data.amount,
+          }),
+          await this.transactionRepository.update(
+            { transactionRef },
+            { transactionStatus: TransactionStatus.SUCCESS },
+          ),
+        ]);
+      }
     } catch (error) {
       console.log(error);
     }

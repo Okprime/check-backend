@@ -51,7 +51,7 @@ export class User {
   @Column({ type: 'varchar', length: 10, nullable: true })
   countryCode: string;
 
-  @Column({ type: 'varchar', length: 20, nullable: true })
+  @Column({ type: 'varchar', length: 20, nullable: true, unique: true })
   phoneNumber: string;
 
   @Column({ type: 'boolean', default: false })
@@ -71,10 +71,4 @@ export class User {
 
   @OneToMany(() => Transaction, (transaction) => transaction.user)
   myTransactions: Transaction[];
-
-  // @OneToMany(() => Shares, (shares) => shares.shareFrom)
-  // sharedByMe: Shares[];
-
-  // @OneToMany(() => Shares, (shares) => shares.shareTo)
-  // sharedToMe: Shares[];
 }

@@ -15,4 +15,5 @@ export interface UserPayload {
   password?: string;
   isVerified?: boolean;
   deviceToken?: string;
+  balance?: number;
 }

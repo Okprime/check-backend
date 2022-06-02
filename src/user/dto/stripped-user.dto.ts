@@ -43,3 +43,13 @@ export class StrippedUser {
   @ApiProperty()
   deviceToken: string;
 }
+@Exclude()
+export class JustUserFirstAndLastName {
+  @Expose()
+  @ApiProperty()
+  firstName: string;
+
+  @Expose()
+  @ApiProperty()
+  lastName: string;
+}

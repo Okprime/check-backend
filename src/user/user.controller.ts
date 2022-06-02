@@ -11,7 +11,10 @@ import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../common/guards/jwt.guard';
 import { AuthUser } from '../common/decorators/auth.decorator';
 import { User } from './entities/user.entity';
-import { StrippedUser } from './dto/stripped-user.dto';
+import {
+  JustUserFirstAndLastName,
+  StrippedUser,
+} from './dto/stripped-user.dto';
 import { plainToClass } from 'class-transformer';
 
 @ApiTags('users')
@@ -39,6 +42,19 @@ export class UsersController {
   async getUserById(@Param('id') id: string, @AuthUser() user: User) {
     await this.handleRestriction(user);
     return plainToClass(StrippedUser, this.usersService.getUserById(id));
+  }
+
+  @ApiOkResponse({
+    description: 'Returns a user by phone number',
+    type: JustUserFirstAndLastName,
+  })
+  @Get('/user/:phoneNumber')
+  @UseGuards(JwtAuthGuard)
+  async getUserByPhoneNumber(@Param('phoneNumber') phoneNumber: string) {
+    return plainToClass(
+      JustUserFirstAndLastName,
+      this.usersService.findByJustPhoneNumber(phoneNumber),
+    );
   }
 
   async handleRestriction(user: User) {

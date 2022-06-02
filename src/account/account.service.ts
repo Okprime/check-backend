@@ -21,44 +21,40 @@ export class AccountService {
       deviceToken: string;
     },
   ) {
-    const { email, phoneNumber, password, role, deviceToken } = payload;
-
-    let existingUser: User;
+    const { phoneNumber, password, role, deviceToken } = payload;
 
     try {
-      existingUser = await this.usersService.findByEmail(email);
-    } catch (error) {}
+      const phoneDetails = this.usersService.getPhoneDetails(phoneNumber);
+      const createPayload: CreateUser = {
+        ...payload,
+        ...phoneDetails,
+      };
 
-    if (existingUser) {
-      throw new BadRequestException('Email already exist');
+      const regularExpression = appConstant.REGEX.PASSWORD;
+
+      if (!regularExpression.test(password)) {
+        throw new BadRequestException('Invalid password format');
+      }
+      const { salt, hash } = await hashPassword(password);
+
+      const user = await this.usersService.create({
+        ...createPayload,
+        salt,
+        hash,
+        role,
+        deviceToken,
+      });
+
+      // send otp verification
+      await this.authService.handleOTPRequest(
+        `${phoneDetails.countryCode}${phoneNumber}`,
+      );
+
+      return this.authService.login(user, deviceToken);
+    } catch (error) {
+      if (error) {
+        throw new BadRequestException('Phone number or Email already exist');
+      }
     }
-
-    const phoneDetails = this.usersService.getPhoneDetails(phoneNumber);
-    const createPayload: CreateUser = {
-      ...payload,
-      ...phoneDetails,
-    };
-
-    const regularExpression = appConstant.REGEX.PASSWORD;
-
-    if (!regularExpression.test(password)) {
-      throw new BadRequestException('Invalid password format');
-    }
-    const { salt, hash } = await hashPassword(password);
-
-    const user = await this.usersService.create({
-      ...createPayload,
-      salt,
-      hash,
-      role,
-      deviceToken,
-    });
-
-    // send otp verification
-    await this.authService.handleOTPRequest(
-      `${phoneDetails.countryCode}${phoneNumber}`,
-    );
-
-    return this.authService.login(user, deviceToken);
   }
 }

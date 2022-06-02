@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Res } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -35,7 +35,14 @@ export class TransactionController {
   }
 
   @Post('verify')
-  verifyTransctionRef(@Body() verifyTransferDto: VerifyTransferDto) {
-    return this.transactionService.verifyTransactionRef(verifyTransferDto);
+  async verifyTransctionRef(
+    @Res() res,
+    @Body() verifyTransferDto: VerifyTransferDto,
+    @AuthUser() user: User,
+  ) {
+    await this.transactionService.verifyTransactionRef(verifyTransferDto, user);
+    return res
+      .status(200)
+      .json({ message: 'Transaction has been verified', error: false });
   }
 }
