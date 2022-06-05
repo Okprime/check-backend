@@ -58,7 +58,6 @@ export class Cart {
     type: 'enum',
     enum: PaymentType,
     nullable: false,
-    default: PaymentType.CASH,
   })
   paymentType: PaymentType;
 }

@@ -33,6 +33,10 @@ export class StrippedUser {
 
   @Expose()
   @ApiProperty()
+  phoneNumber: number;
+
+  @Expose()
+  @ApiProperty()
   createdAt: string;
 
   @Expose()

@@ -1,5 +1,5 @@
-import { IsDefined, IsNotEmpty, IsString } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class LoginDto {
   @ApiProperty()
@@ -10,9 +10,9 @@ export class LoginDto {
   @IsString()
   password: string;
 
-  @ApiProperty()
-  @IsDefined()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
-  deviceToken: string;
+  deviceToken?: string;
 }

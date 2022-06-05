@@ -13,6 +13,7 @@ import { GetAllCartQueryParams } from './dto/get-all-cart-query-param.dto';
 import { GetCartQueryParams } from './dto/get-cart-query-param.dto';
 import { PushService } from '../common/services/push/push.service';
 import { CartStatus } from './types/cart.types';
+import { UsersService } from '../user/user.service';
 
 @Injectable()
 export class CartService {
@@ -24,6 +25,7 @@ export class CartService {
     private menuService: MenuService,
     private orderItemService: OrderItemService,
     private pushService: PushService,
+    private usersService: UsersService,
   ) {}
 
   async saveCart(payload: any) {
@@ -33,7 +35,10 @@ export class CartService {
   async createCart(createCartDto: CreateCartDto, user: User) {
     const payload = JSON.parse(createCartDto.payload);
 
-    const { restaurantId, orders, table, totalAmount } = payload;
+    const { restaurantId, orders, table, totalAmount, paymentType } = payload;
+
+    if (user.balance < totalAmount)
+      throw new BadRequestException('Insufficient Funds');
 
     const restaurantDetails =
       await this.restaurantService.findOneDependingOnUserRole(restaurantId);
@@ -89,10 +94,19 @@ export class CartService {
       totalAmount,
       orders: orderOrder,
       user,
+      paymentType,
     };
 
     // save cart
     await this.cartRepository.save(cartPayload);
+
+    const userBalance = user.balance - totalAmount;
+    console.log('userBalance', userBalance);
+
+    // update user's balance
+    await this.usersService.updateUserProfile(user.id, {
+      balance: userBalance,
+    });
 
     const managerToken = restaurantDetails.manager.deviceToken;
 

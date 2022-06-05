@@ -2,7 +2,6 @@ import {
   Controller,
   UseGuards,
   Get,
-  Res,
   Param,
   BadRequestException,
 } from '@nestjs/common';
@@ -39,8 +38,7 @@ export class UsersController {
   })
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  async getUserById(@Param('id') id: string, @AuthUser() user: User) {
-    await this.handleRestriction(user);
+  async getUserById(@Param('id') id: string) {
     return plainToClass(StrippedUser, this.usersService.getUserById(id));
   }
 
