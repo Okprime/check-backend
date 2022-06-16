@@ -18,7 +18,7 @@ export class AccountService {
       password?: string;
       phoneNumber?: string;
       role?: string;
-      deviceToken: string;
+      deviceToken?: string;
     },
   ) {
     const { phoneNumber, password, role, deviceToken } = payload;

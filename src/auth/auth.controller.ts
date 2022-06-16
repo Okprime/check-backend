@@ -6,11 +6,12 @@ import {
   Post,
   UseGuards,
   Res,
+  Get,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { JwtOptionalAuthGuard } from '../common/guards/jwt-optional.guard';
 import { RefreshAuthGuard } from '../common/guards/refresh-auth.guard';
-import { AuthUser, AuthUserData } from '../common/decorators/auth.decorator';
+import { AuthUser } from '../common/decorators/auth.decorator';
 import { LocalAuthGuard } from '../common/guards/local-auth.guard';
 import { User } from '../user/entities/user.entity';
 import { AuthService } from './auth.service';
@@ -19,6 +20,7 @@ import { OTPVerificationDTO } from './dto/OTPVerification.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { OTPRequestDTO } from './dto/OTPRequest.dto';
 import { PasswordResetDto } from './dto/password-reset.dto';
+// import { JwtAuthGuard } from '../common/guards/jwt.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -29,6 +31,7 @@ export class AuthController {
   @HttpCode(200)
   @Post('login')
   async login(@Request() req, @Body() loginDto: LoginDto) {
+    console.log('loginDto', loginDto);
     const result = await this.authService.login(req.user, loginDto);
     return result;
   }
@@ -74,10 +77,7 @@ export class AuthController {
   @UseGuards(RefreshAuthGuard)
   @ApiBearerAuth()
   @Post('refresh')
-  async refreshToken(
-    @AuthUser() user: AuthUserData,
-    @Body() body: RefreshTokenDto,
-  ) {
+  async refreshToken(@AuthUser() user: User, @Body() body: RefreshTokenDto) {
     const { refreshToken } = body;
     return this.authService.refreshToken(user, refreshToken);
   }
@@ -96,4 +96,16 @@ export class AuthController {
       .status(200)
       .json({ message: 'Your password has been reset', error: false });
   }
+
+  // @ApiOkResponse({
+  //   description: 'Logs a user out',
+  //   status: 201,
+  // })
+  // @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard)
+  // @Get('logout')
+  // async logout(@AuthUser() user: User, @Res() res) {
+  //   await this.authService.logout(user);
+  //   return res.status(200).json({ message: 'Success', error: false });
+  // }
 }

@@ -8,6 +8,7 @@ import { RestaurantService } from '../restaurant/restaurant.service';
 import { MenuService } from '../menu/menu.service';
 import { OrderItemService } from '../order-item/order-item.service';
 import { PushService } from '../common/services/push/push.service';
+import { UsersService } from '../user/user.service';
 
 describe('CartService', () => {
   let service: CartService;
@@ -50,6 +51,12 @@ describe('CartService', () => {
           provide: PushService,
           useValue: {
             sendPush: jest.fn(),
+          },
+        },
+        {
+          provide: UsersService,
+          useValue: {
+            updateUserProfile: jest.fn(),
           },
         },
       ],

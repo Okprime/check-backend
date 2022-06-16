@@ -48,9 +48,8 @@ export class CreateUserDto {
   })
   password: string;
 
-  @ApiProperty()
-  @IsDefined()
-  @IsNotEmpty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
-  deviceToken: string;
+  deviceToken?: string;
 }

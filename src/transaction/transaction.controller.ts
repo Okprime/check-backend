@@ -20,7 +20,7 @@ export class TransactionController {
     @Body() createTransactionDto: CreateTransactionDto,
     @AuthUser() user: User,
   ) {
-    return this.transactionService.saveDeposit(createTransactionDto, user);
+    return this.transactionService.saveeDepositt(createTransactionDto, user);
   }
 
   @Post('transfer')

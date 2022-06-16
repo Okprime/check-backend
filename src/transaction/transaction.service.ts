@@ -11,6 +11,7 @@ import { CreateTransferDto } from './dto/create-transfer.dto';
 import { UsersService } from '../user/user.service';
 import { PushService } from '../common/services/push/push.service';
 import { VerifyTransferDto } from './dto/verify-transaction.dto';
+import axios from 'axios';
 
 const Flutterwave = require('flutterwave-node-v3');
 
@@ -27,6 +28,7 @@ export class TransactionService {
     private usersService: UsersService,
     private pushService: PushService,
   ) {}
+
   async saveDeposit(createTransactionDto: CreateTransactionDto, user: User) {
     const transactionRef = `transRefId-${nanoid(10)}`;
     return this.transactionRepository.save({
@@ -35,6 +37,42 @@ export class TransactionService {
       transactionRef,
       transactionType: TransactionType.DEPOSIT,
     });
+  }
+
+  async saveeDepositt(createTransactionDto: CreateTransactionDto, user: User) {
+    try {
+      console.log('user', user);
+      const { amount } = createTransactionDto;
+      const { email, phoneNumber, firstName, lastName } = user;
+      const name = `${firstName} ${lastName}`;
+      const transactionRef = `transRefId-${nanoid(10)}`;
+
+      const response = await axios.post(
+        'https://api.flutterwave.com/v3/payments',
+        {
+          // headers: {
+          //   Authorization: `Bearer ${process.env.FLUTTERWAVE_SECRET}`,
+          // },
+          json: {
+            tx_ref: transactionRef,
+            amount: amount,
+            currency: 'NGN',
+            redirect_url: 'https://google.com',
+            customer: {
+              email,
+              phonenumber: `0${phoneNumber}`,
+              name,
+            },
+          },
+        },
+      );
+
+      console.log('response', response);
+      // return response;
+    } catch (err) {
+      console.log('An error occured', err);
+      // console.log(err.response.body);
+    }
   }
 
   async transferFundsWithinAccounts(

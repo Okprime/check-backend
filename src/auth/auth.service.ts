@@ -29,7 +29,6 @@ export class AuthService {
   ) {}
 
   async login(user: any, loginDto?: any) {
-    const { deviceToken } = loginDto;
     const payload = {
       sub: user.id,
       email: user.email,
@@ -42,7 +41,8 @@ export class AuthService {
       deviceToken: user.deviceToken,
     };
 
-    if (deviceToken) {
+    if (loginDto?.deviceToken) {
+      const deviceToken = loginDto.deviceToken;
       await this.usersService.updateUserProfile(user.id, { deviceToken });
     }
 
@@ -50,9 +50,10 @@ export class AuthService {
     const refreshToken = this.jwtService.sign(payload, {
       expiresIn: appConstant.TOKENS.REFRESH.JWT_DURATION,
     });
+
     // Store refresh token in redis with expire time
     await this.redisService.set(
-      refreshToken,
+      user.email,
       refreshToken,
       appConstant.TOKENS.REFRESH.REDIS_DURATION,
     );
@@ -154,4 +155,12 @@ export class AuthService {
 
     return;
   }
+
+  // async logout(user: User) {
+  //   console.log('user.email', user.email);
+  //   // const token = await this.redisService.get(user.email);
+  //   // console.log('token', token);
+  //   const result = await this.redisService.delete(user.email);
+  //   console.log('result', result);
+  // }
 }
