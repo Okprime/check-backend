@@ -36,7 +36,7 @@ export class Cart {
   updatedAt: Date;
 
   @ManyToOne(() => User, (user) => user.myCarts, { eager: true })
-  @JoinColumn({ name: 'User_id' })
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
   @Column({
